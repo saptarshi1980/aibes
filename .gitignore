@@ -1,0 +1,11 @@
+.venv/
+__pycache__/
+*.pyc
+.env
+.vscode/
+uploads/
+logs/
+reports/
+vector_db/
+node_modules/
+dist/
