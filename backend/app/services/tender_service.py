@@ -1,9 +1,13 @@
 from datetime import datetime
+from urllib import request
 from uuid import uuid4
 
 from app.domain.tender import Tender
 from app.enums.tender_status import TenderStatus
 from app.repositories.tender_repository import TenderRepository
+from app.utils.storage_manager import StorageManager
+
+
 
 
 class TenderService:
@@ -17,18 +21,27 @@ class TenderService:
             raise ValueError("Tender number already exists.")
 
         tender = Tender(
-            id=uuid4(),
-            tender_number=request.tender_number,
-            title=request.title,
-            department=request.department,
-            issue_date=request.issue_date,
-            closing_date=request.closing_date,
-            status=TenderStatus.DRAFT,
-            created_at=datetime.now(),
-            updated_at=datetime.now()
+        id=uuid4(),
+        tender_number=request.tender_number,
+        title=request.title,
+        department=request.department,
+        issue_date=request.issue_date,
+        closing_date=request.closing_date,
+        status=TenderStatus.DRAFT,
+        created_at=datetime.now(),
+        updated_at=datetime.now()
+    )
+
+        saved_tender = self.repository.save(tender)
+
+        tender_folder = f"TENDER_{request.tender_number.replace('/', '_')}"
+
+        StorageManager.create_tender_folder(
+        saved_tender.id,
+        saved_tender.tender_number
         )
 
-        return self.repository.save(tender)
+        return saved_tender
 
     def get_all_tenders(self):
         return self.repository.find_all()
