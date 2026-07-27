@@ -11,7 +11,7 @@ from app.enums.document_status import DocumentStatus
 from app.enums.document_type import DocumentType
 from app.repositories.tender_document_repository import TenderDocumentRepository
 from app.utils.storage_manager import StorageManager
-
+from app.services.document_service import DocumentService
 
 class TenderDocumentService:
 
@@ -46,13 +46,9 @@ class TenderDocumentService:
             copyfileobj(file.file, buffer)
         
         # Extract text from the saved PDF
-        result = PDFProcessor.extract_document_text(str(destination))
-
-        # Save extracted text alongside the PDF
-        StorageManager.save_text_file(
-            destination,
-            result["text"]
-        )    
+        result = DocumentService.process_pdf(
+            destination
+        )
 
         # Create metadata
         document = TenderDocument(
