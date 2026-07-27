@@ -1,6 +1,7 @@
 from uuid import UUID
 
 from fastapi import APIRouter, HTTPException
+from app.services.criterion_extraction_service import CriterionExtractionService
 
 from app.schemas.tender_schema import (
     TenderCreateRequest,
@@ -41,3 +42,10 @@ def get_tender(tender_id: UUID):
         )
 
     return tender
+
+@router.post("/{tender_id}/extract-criteria")
+def extract_criteria(tender_id: UUID):
+
+    service = CriterionExtractionService()
+
+    return service.extract_from_tender(tender_id)

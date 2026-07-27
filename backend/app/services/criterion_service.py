@@ -15,7 +15,6 @@ class CriterionService:
         criterion = Criterion(
             id=uuid4(),
             tender_id=request.tender_id,
-            criterion_number=request.criterion_number,
             title=request.title,
             description=request.description,
             evidence_required=request.evidence_required,
@@ -26,5 +25,5 @@ class CriterionService:
 
         return self.repository.save(criterion)
 
-    def get_criteria(self, tender_id: UUID):
+    def get_by_tender(self, tender_id: UUID):
         return self.repository.find_by_tender(tender_id)

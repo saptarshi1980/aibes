@@ -10,7 +10,7 @@ class Criterion:
 
     tender_id: UUID
 
-    criterion_number: str
+    #criterion_number: str
 
     title: str
 
