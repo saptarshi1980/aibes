@@ -56,3 +56,22 @@ class StorageManager:
             raise FileNotFoundError("Tender folder not found.")
 
         return tender_folder / "tender_documents"
+    
+    @staticmethod
+    def save_text_file(pdf_path: Path, text: str) -> Path:
+        """
+        Saves extracted text alongside the PDF.
+        Example:
+            NIT_xxxxx.pdf
+            NIT_xxxxx.txt
+        """
+
+        txt_path = pdf_path.with_suffix(".txt")
+
+        txt_path.write_text(
+            text,
+            encoding="utf-8"
+        )
+
+        return txt_path
+    

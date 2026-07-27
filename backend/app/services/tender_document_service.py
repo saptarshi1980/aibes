@@ -2,7 +2,8 @@ from datetime import datetime
 from pathlib import Path
 from shutil import copyfileobj
 from uuid import UUID, uuid4
-
+from app.document_intelligence.pdf_processor import PDFProcessor
+from app.utils.storage_manager import StorageManager
 from fastapi import UploadFile
 
 from app.domain.tender_document import TenderDocument
@@ -43,6 +44,15 @@ class TenderDocumentService:
         # Save file
         with destination.open("wb") as buffer:
             copyfileobj(file.file, buffer)
+        
+        # Extract text from the saved PDF
+        result = PDFProcessor.extract_document_text(str(destination))
+
+        # Save extracted text alongside the PDF
+        StorageManager.save_text_file(
+            destination,
+            result["text"]
+        )    
 
         # Create metadata
         document = TenderDocument(
