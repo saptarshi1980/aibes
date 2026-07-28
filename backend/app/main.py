@@ -20,6 +20,7 @@ from app.api.bidder_documents import router as bidder_document_router
 from app.models.criterion_model import CriterionModel
 from app.models.evaluation_result_model import EvaluationResultModel
 from app.api.evaluation import router as evaluation_router
+from app.api.retriever import router as retriever_router
 
 app = FastAPI(
     title="AI Assisted Bid Evaluation System",
@@ -41,6 +42,7 @@ app.include_router(
 app.include_router(
     evaluation_router
 )
+app.include_router(retriever_router)
 
 @app.get("/")
 def home():

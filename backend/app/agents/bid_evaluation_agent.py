@@ -1,6 +1,9 @@
 import json
+import logging
 
 from app.llm.llm_factory import LLMFactory
+
+logger = logging.getLogger(__name__)
 
 
 class BidEvaluationAgent:
@@ -15,12 +18,18 @@ class BidEvaluationAgent:
         bidder_text
     ):
 
+        print("=" * 80)
+        print("Retriever returned:", len(bidder_text), "characters")
+        print("=" * 80)
+        print(bidder_text[:1000])
+        print("=" * 80)
+
         prompt = f"""
-You are an expert technical bid evaluation officer.
+You are an expert Technical Bid Evaluation Officer.
 
-Your task is to determine whether the bidder satisfies the tender criterion.
+Your responsibility is to determine whether the bidder satisfies ONE tender criterion.
 
---------------------------------------------------------
+====================================================
 
 Criterion Title:
 {criterion.title}
@@ -34,27 +43,29 @@ Evidence Required:
 Mandatory:
 {criterion.mandatory}
 
---------------------------------------------------------
+====================================================
 
-Technical Bid
+Relevant Extracts from Bidder Technical Bid
 
 {bidder_text}
 
---------------------------------------------------------
+====================================================
 
-Instructions:
+Instructions
 
 1. Read the criterion carefully.
 
-2. Examine the technical bid.
+2. Read ONLY the supplied bidder text.
 
-3. Decide whether the criterion is satisfied.
+3. Decide whether the bidder satisfies the criterion.
 
-4. Quote the relevant supporting text if found.
+4. Quote the exact supporting text whenever available.
 
-5. Respond ONLY as JSON.
+5. If evidence is insufficient, do NOT assume compliance.
 
-Allowed status values:
+6. Return ONLY JSON.
+
+Allowed status values
 
 COMPLIED
 PARTIALLY_COMPLIED
@@ -62,21 +73,27 @@ NOT_COMPLIED
 NOT_FOUND
 NEEDS_MANUAL_REVIEW
 
-Return exactly:
+Return EXACTLY
 
 {{
-    "status": "...",
-    "confidence": 0.95,
-    "matched_text": "...",
-    "remarks": "..."
+    "status":"COMPLIED",
+    "confidence":0.95,
+    "matched_text":"...",
+    "remarks":"..."
 }}
 
-Do not write markdown.
+Do NOT return markdown.
 
-Do not explain anything outside the JSON.
+Do NOT explain anything.
+
+Return JSON only.
 """
 
+        logger.info("Sending prompt to Gemini...")
+
         response = self.llm.generate(prompt)
+
+        logger.info("Gemini response received.")
 
         response = response.strip()
 
@@ -91,4 +108,34 @@ Do not explain anything outside the JSON.
 
         response = response.strip()
 
-        return json.loads(response)
+        try:
+
+            result = json.loads(response)
+
+        except Exception:
+
+            logger.exception("Invalid JSON received from Gemini")
+            logger.error(response)
+
+            raise ValueError(
+                "Gemini returned invalid JSON."
+            )
+
+        required_fields = [
+            "status",
+            "confidence",
+            "matched_text",
+            "remarks"
+        ]
+
+        for field in required_fields:
+
+            if field not in result:
+
+                raise ValueError(
+                    f"Gemini response missing field '{field}'."
+                )
+
+        logger.info("Evaluation completed successfully.")
+
+        return result
