@@ -15,6 +15,7 @@ from app.models.tender_model import TenderModel
 from app.models.bidder_model import BidderModel
 from app.api.bidders import router as bidder_router
 from app.models.bidder_document_model import BidderDocumentModel
+from app.api.bidder_documents import router as bidder_document_router
 
 
 app = FastAPI(
@@ -31,6 +32,9 @@ app.include_router(document_intelligence_router)
 app.include_router(llm_router)
 app.include_router(ai_test_router)
 app.include_router(bidder_router)
+app.include_router(
+    bidder_document_router
+)
 
 @app.get("/")
 def home():

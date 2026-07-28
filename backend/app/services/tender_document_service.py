@@ -1,17 +1,13 @@
 from datetime import datetime
-from pathlib import Path
-from shutil import copyfileobj
 from uuid import UUID, uuid4
-from app.document_intelligence.pdf_processor import PDFProcessor
 from app.utils.storage_manager import StorageManager
 from fastapi import UploadFile
-
 from app.domain.tender_document import TenderDocument
 from app.enums.document_status import DocumentStatus
 from app.enums.document_type import DocumentType
 from app.repositories.tender_document_repository import TenderDocumentRepository
 from app.utils.storage_manager import StorageManager
-from app.services.document_service import DocumentService
+from app.services.document_storage_service import DocumentStorageService
 
 class TenderDocumentService:
 
@@ -39,15 +35,10 @@ class TenderDocumentService:
             f"{document_type.value}_{document_id}.pdf"
         )
 
-        destination = document_folder / stored_filename
-
-        # Save file
-        with destination.open("wb") as buffer:
-            copyfileobj(file.file, buffer)
-        
-        # Extract text from the saved PDF
-        result = DocumentService.process_pdf(
-            destination
+        DocumentStorageService.save_document(
+        document_folder,
+        stored_filename,
+        file
         )
 
         # Create metadata

@@ -1,31 +1,80 @@
-from typing import Dict, List
 from uuid import UUID
 
+from sqlalchemy import select
+
+from app.database.connection import SessionLocal
 from app.domain.criterion import Criterion
+from app.models.criterion_model import CriterionModel
 
 
 class CriterionRepository:
 
-    _criteria: Dict[UUID, Criterion] = {}
-
     def save(self, criterion: Criterion):
 
-        self._criteria[criterion.id] = criterion
+        with SessionLocal() as session:
+
+            model = CriterionModel(
+                id=str(criterion.id),
+                tender_id=str(criterion.tender_id),
+                title=criterion.title,
+                description=criterion.description,
+                evidence_required=criterion.evidence_required,
+                mandatory=criterion.mandatory,
+                created_at=criterion.created_at,
+                updated_at=criterion.updated_at
+            )
+
+            session.add(model)
+            session.commit()
 
         return criterion
 
     def find_by_id(self, criterion_id: UUID):
 
-        return self._criteria.get(criterion_id)
+        with SessionLocal() as session:
 
-    def find_by_tender(self, tender_id: UUID) -> List[Criterion]:
+            model = session.get(
+                CriterionModel,
+                str(criterion_id)
+            )
 
-        return [
+            if model is None:
+                return None
 
-            criterion
+            return Criterion(
+                id=UUID(model.id),
+                tender_id=UUID(model.tender_id),
+                title=model.title,
+                description=model.description,
+                evidence_required=model.evidence_required,
+                mandatory=model.mandatory,
+                created_at=model.created_at,
+                updated_at=model.updated_at
+            )
 
-            for criterion in self._criteria.values()
+    def find_by_tender(self, tender_id: UUID):
 
-            if criterion.tender_id == tender_id
+        with SessionLocal() as session:
 
-        ]
+            rows = session.scalars(
+                select(CriterionModel).where(
+                    CriterionModel.tender_id == str(tender_id)
+                )
+            ).all()
+
+            return [
+
+                Criterion(
+                    id=UUID(row.id),
+                    tender_id=UUID(row.tender_id),
+                    title=row.title,
+                    description=row.description,
+                    evidence_required=row.evidence_required,
+                    mandatory=row.mandatory,
+                    created_at=row.created_at,
+                    updated_at=row.updated_at
+                )
+
+                for row in rows
+
+            ]

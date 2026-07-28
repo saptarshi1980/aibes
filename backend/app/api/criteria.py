@@ -30,4 +30,4 @@ def create_criterion(request: CriterionCreateRequest):
 )
 def get_criteria(tender_id: UUID):
 
-    return service.get_criteria(tender_id)
+    return service.get_by_tender(tender_id)

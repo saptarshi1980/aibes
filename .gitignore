@@ -9,3 +9,4 @@ reports/
 vector_db/
 node_modules/
 dist/
+storage/

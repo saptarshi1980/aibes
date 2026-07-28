@@ -75,3 +75,51 @@ class StorageManager:
 
         return txt_path
     
+    @staticmethod
+    def sanitize_folder_name(name: str):
+
+        return (
+            name.strip()
+            .replace("/", "_")
+            .replace("\\", "_")
+            .replace(":", "_")
+            .replace("*", "_")
+            .replace("?", "_")
+            .replace('"', "_")
+            .replace("<", "_")
+            .replace(">", "_")
+            .replace("|", "_")
+            .replace(" ", "_")
+        )
+
+
+    @classmethod
+    def get_bidder_documents_path(
+        cls,
+        tender_id: UUID,
+        bidder_name: str
+    ):
+
+        tender_folder = cls.find_tender_folder(
+            tender_id
+        )
+
+        if tender_folder is None:
+            raise FileNotFoundError(
+                "Tender folder not found."
+            )
+
+        bidder_folder = (
+            tender_folder
+            / "bidders"
+            / cls.sanitize_folder_name(
+                bidder_name
+            )
+        )
+
+        bidder_folder.mkdir(
+            parents=True,
+            exist_ok=True
+        )
+
+        return bidder_folder
