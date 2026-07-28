@@ -55,3 +55,33 @@ class BidderDocumentRepository:
                 for row in rows
 
             ]
+            
+    def find_by_document_type(
+    self,
+    bidder_id: UUID,
+    document_type: DocumentType
+):
+
+        with SessionLocal() as session:
+
+            model = session.scalar(
+
+                select(BidderDocumentModel).where(
+                    BidderDocumentModel.bidder_id == str(bidder_id),
+                    BidderDocumentModel.document_type == document_type.value
+                )
+
+            )
+
+            if model is None:
+                return None
+
+            return BidderDocument(
+                id=UUID(model.id),
+                bidder_id=UUID(model.bidder_id),
+                original_filename=model.original_filename,
+                stored_filename=model.stored_filename,
+                document_type=DocumentType(model.document_type),
+                status=DocumentStatus(model.status),
+                uploaded_at=model.uploaded_at
+            )

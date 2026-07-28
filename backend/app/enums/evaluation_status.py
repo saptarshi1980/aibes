@@ -1,12 +1,14 @@
 from enum import Enum
 
 
-class DocumentStatus(str, Enum):
+class EvaluationStatus(str, Enum):
 
-    UPLOADED = "UPLOADED"
+    COMPLIED = "COMPLIED"
 
-    PROCESSING = "PROCESSING"
+    PARTIALLY_COMPLIED = "PARTIALLY_COMPLIED"
 
-    PROCESSED = "PROCESSED"
+    NOT_COMPLIED = "NOT_COMPLIED"
 
-    FAILED = "FAILED"
+    NOT_FOUND = "NOT_FOUND"
+
+    NEEDS_MANUAL_REVIEW = "NEEDS_MANUAL_REVIEW"

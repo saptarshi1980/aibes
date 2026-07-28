@@ -1,18 +1,25 @@
 from dataclasses import dataclass
+from datetime import datetime
 from uuid import UUID
-
+from app.enums.evaluation_status import EvaluationStatus
 
 @dataclass
 class EvaluationResult:
 
-    criterion_id: UUID
+    id: UUID
 
     bidder_id: UUID
 
-    status: str
+    criterion_id: UUID
+
+    status: EvaluationStatus
 
     confidence: float
 
-    evidence: str
+    matched_text: str
 
     remarks: str
+
+    created_at: datetime
+
+    updated_at: datetime

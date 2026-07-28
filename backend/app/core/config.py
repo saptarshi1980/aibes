@@ -9,12 +9,17 @@ class Config:
 
     GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 
-    LLM_PROVIDER = os.getenv("LLM_PROVIDER", "GROQ")
+    #LLM_PROVIDER = os.getenv("LLM_PROVIDER", "GROQ")
 
+    LLM_PROVIDER = os.getenv("LLM_PROVIDER", "GEMINI")
     LLM_MODEL = os.getenv(
         "LLM_MODEL",
         "llama-3.3-70b-versatile"
     )
+    
+    GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+    
+    
     DB_HOST = os.getenv("DB_HOST", "localhost")
 
     DB_PORT = int(os.getenv("DB_PORT", "3306"))

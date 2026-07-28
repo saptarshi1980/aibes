@@ -17,6 +17,9 @@ from app.api.bidders import router as bidder_router
 from app.models.bidder_document_model import BidderDocumentModel
 from app.api.bidder_documents import router as bidder_document_router
 
+from app.models.criterion_model import CriterionModel
+from app.models.evaluation_result_model import EvaluationResultModel
+from app.api.evaluation import router as evaluation_router
 
 app = FastAPI(
     title="AI Assisted Bid Evaluation System",
@@ -34,6 +37,9 @@ app.include_router(ai_test_router)
 app.include_router(bidder_router)
 app.include_router(
     bidder_document_router
+)
+app.include_router(
+    evaluation_router
 )
 
 @app.get("/")
