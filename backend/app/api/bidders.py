@@ -42,3 +42,22 @@ def create_bidder(request: BidderCreateRequest):
 def get_bidders(tender_id: UUID):
 
     return service.get_bidders(tender_id)
+
+@router.get(
+    "/{bidder_id}",
+    response_model=BidderResponse
+)
+def get_bidder(bidder_id: UUID):
+
+    bidder = service.get_bidder(
+        bidder_id
+    )
+
+    if bidder is None:
+
+        raise HTTPException(
+            status_code=404,
+            detail="Bidder not found."
+        )
+
+    return bidder

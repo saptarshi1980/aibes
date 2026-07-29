@@ -4,7 +4,8 @@ from app.agents.bid_evaluation_agent import BidEvaluationAgent
 from app.enums.evaluation_status import EvaluationStatus
 from app.repositories.bidder_repository import BidderRepository
 from app.repositories.criterion_repository import CriterionRepository
-from app.services.document_retriever import DocumentRetriever
+#from app.services.document_retriever import DocumentRetriever
+from app.rag.rag_retriever import RAGRetriever
 from app.services.evaluation_result_service import EvaluationResultService
 
 logger = logging.getLogger(__name__)
@@ -22,7 +23,8 @@ class EvaluationService:
 
         self.agent = BidEvaluationAgent()
 
-        self.retriever = DocumentRetriever()
+        #self.retriever = DocumentRetriever()
+        self.retriever = RAGRetriever()
 
     def normalize_status(
         self,
@@ -215,3 +217,42 @@ class EvaluationService:
             "criteria": evaluation_details
 
         }
+        
+    def get_results(
+    self,
+    bidder_id
+):
+
+        results = self.results.get_results(
+            bidder_id
+        )
+
+        output = []
+
+        for result in results:
+
+            criterion = self.criteria.find_by_id(
+                result.criterion_id
+            )
+
+            output.append({
+
+                "id": result.id,
+
+                "criterion_id": result.criterion_id,
+
+                "criterion_title": criterion.title,
+
+                "mandatory": criterion.mandatory,
+
+                "status": result.status.value,
+
+                "confidence": result.confidence,
+
+                "remarks": result.remarks,
+
+                "matched_text": result.matched_text
+
+            })
+
+        return output    

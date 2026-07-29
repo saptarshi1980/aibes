@@ -36,3 +36,12 @@ class EvaluationResultService:
         )
 
         return self.repository.save(result)
+    
+    def get_results(
+    self,
+    bidder_id
+):
+
+        return self.repository.find_by_bidder(
+            bidder_id
+        )

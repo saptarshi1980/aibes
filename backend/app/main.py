@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-
+from fastapi.middleware.cors import CORSMiddleware
 from app.api.documents import router as document_router
 from app.api.tenders import router as tender_router
 from app.api.tender_documents import router as tender_document_router
@@ -26,6 +26,17 @@ app = FastAPI(
     title="AI Assisted Bid Evaluation System",
     version="1.0.0"
 )
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:5173",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 Base.metadata.create_all(bind=engine)
 
 app.include_router(tender_router)

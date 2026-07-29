@@ -107,3 +107,39 @@ class TenderRepository:
             session.commit()
 
             return True
+    
+    def update(self, tender: Tender):
+
+        with SessionLocal() as session:
+
+            model = session.get(
+            TenderModel,
+            str(tender.id)
+            )
+
+            if model is None:
+                return None
+
+            model.tender_number = tender.tender_number
+            model.title = tender.title
+            model.department = tender.department
+            model.issue_date = tender.issue_date
+            model.closing_date = tender.closing_date
+            model.description = tender.description
+            model.status = tender.status.value
+            model.updated_at = tender.updated_at
+
+            session.commit()
+
+            return Tender(
+                    id=UUID(model.id),
+                    tender_number=model.tender_number,
+                    title=model.title,
+                    department=model.department,
+                    issue_date=model.issue_date,
+                    closing_date=model.closing_date,
+                    status=TenderStatus(model.status),
+                    description=model.description,
+                    created_at=model.created_at,
+                    updated_at=model.updated_at
+                )    

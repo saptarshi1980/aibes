@@ -30,3 +30,8 @@ class BidderService:
         return self.repository.find_by_tender(
             tender_id
         )
+    def get_bidder(self, bidder_id: UUID):
+
+        return self.repository.find_by_id(
+            bidder_id
+        )

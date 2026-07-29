@@ -61,3 +61,12 @@ def evaluate_tender(
             status_code=400,
             detail=str(ex)
         )        
+        
+@router.get("/bidder/{bidder_id}")
+def get_results(
+    bidder_id: UUID
+):
+
+    return service.get_results(
+        bidder_id
+    )        

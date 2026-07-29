@@ -49,3 +49,26 @@ def extract_criteria(tender_id: UUID):
     service = CriterionExtractionService()
 
     return service.extract_from_tender(tender_id)
+
+@router.put(
+    "/{tender_id}",
+    response_model=TenderResponse
+)
+def update_tender(
+    tender_id: UUID,
+    request: TenderCreateRequest
+):
+
+    try:
+
+        return service.update_tender(
+            tender_id,
+            request
+        )
+
+    except ValueError as ex:
+
+        raise HTTPException(
+            status_code=404,
+            detail=str(ex)
+        )
