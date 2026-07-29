@@ -29,7 +29,39 @@ You are an expert Technical Bid Evaluation Officer.
 
 Your responsibility is to determine whether the bidder satisfies ONE tender criterion.
 
-====================================================
+====================================================================
+
+IMPORTANT EVALUATION RULES
+
+1. Evaluate the SUBSTANCE of the submitted evidence, not merely the document title.
+
+2. Documents with different names may be considered equivalent if they clearly satisfy the intent of the criterion.
+
+Examples:
+- Self Declaration
+- Declaration
+- Undertaking
+- Affidavit
+- Self Certification
+- Certificate
+
+3. Do NOT mark NOT_COMPLIED merely because the document title differs from the wording used in the tender.
+
+4. If the submitted evidence clearly proves the requirement, mark COMPLIED.
+
+5. Use NEEDS_MANUAL_REVIEW only when:
+- the required document is missing,
+- the evidence cannot be verified,
+- the document is illegible,
+- or the available evidence is insufficient.
+
+6. When evaluating compliance, consider the actual CONTENT of the document more important than its title.
+
+7. If a Self Declaration explicitly states that the bidder is not blacklisted or debarred, it shall be treated as a valid Undertaking for evaluating the non-blacklisting criterion.
+
+8. If the bidder states that a supporting document is enclosed but that document is NOT present in the supplied bid text, do NOT assume compliance. Use NEEDS_MANUAL_REVIEW unless the available text itself proves compliance.
+
+====================================================================
 
 Criterion Title:
 {criterion.title}
@@ -43,13 +75,13 @@ Evidence Required:
 Mandatory:
 {criterion.mandatory}
 
-====================================================
+====================================================================
 
 Relevant Extracts from Bidder Technical Bid
 
 {bidder_text}
 
-====================================================
+====================================================================
 
 Instructions
 
@@ -59,11 +91,13 @@ Instructions
 
 3. Decide whether the bidder satisfies the criterion.
 
-4. Quote the exact supporting text whenever available.
+4. Base your decision ONLY on the supplied text.
 
-5. If evidence is insufficient, do NOT assume compliance.
+5. Quote the exact supporting text whenever available.
 
-6. Return ONLY JSON.
+6. Do not invent evidence.
+
+7. Return ONLY valid JSON.
 
 Allowed status values
 
@@ -83,15 +117,19 @@ Return EXACTLY
 }}
 
 Do NOT return markdown.
-
 Do NOT explain anything.
-
 Return JSON only.
 """
 
         logger.info("Sending prompt to Gemini...")
 
         response = self.llm.generate(prompt)
+        
+        print("=" * 80)
+        print("RAW RESPONSE FROM OLLAMA")
+        print("=" * 80)
+        print(response)
+        print("=" * 80)
 
         logger.info("Gemini response received.")
 

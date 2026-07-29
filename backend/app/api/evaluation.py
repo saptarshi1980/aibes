@@ -1,8 +1,7 @@
 from uuid import UUID
-
 from fastapi import APIRouter, HTTPException
-
 from app.services.evaluation_service import EvaluationService
+from app.services.tender_evaluation_service import TenderEvaluationService
 
 router = APIRouter(
     prefix="/api/v1/evaluation",
@@ -10,6 +9,7 @@ router = APIRouter(
 )
 
 service = EvaluationService()
+tender_service = TenderEvaluationService()
 
 
 @router.post("/criterion/{bidder_id}/{criterion_id}")
@@ -44,3 +44,20 @@ def evaluate_bidder(
             status_code=400,
             detail=str(ex)
         )
+        
+@router.post("/tender/{tender_id}")
+def evaluate_tender(
+    tender_id: UUID
+):
+    try:
+
+        return tender_service.evaluate_tender(
+            tender_id
+        )
+
+    except ValueError as ex:
+
+        raise HTTPException(
+            status_code=400,
+            detail=str(ex)
+        )        

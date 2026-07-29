@@ -24,27 +24,60 @@ class EvaluationService:
 
         self.retriever = DocumentRetriever()
 
+    def normalize_status(
+        self,
+        status: str
+    ) -> EvaluationStatus:
+
+        status = status.strip().upper()
+
+        mapping = {
+
+            "N/A": "COMPLIED",
+
+            "NA": "COMPLIED",
+
+            "NOT APPLICABLE": "COMPLIED",
+
+            "APPLICABLE": "COMPLIED"
+
+        }
+
+        status = mapping.get(
+            status,
+            status
+        )
+
+        return EvaluationStatus(status)
+
     def evaluate_one(
         self,
         bidder_id,
         criterion_id
     ):
 
-        logger.info("Evaluating Criterion %s", criterion_id)
+        logger.info(
+            "Evaluating Criterion %s",
+            criterion_id
+        )
 
         bidder = self.bidders.find_by_id(
             bidder_id
         )
 
         if bidder is None:
-            raise ValueError("Bidder not found.")
+            raise ValueError(
+                "Bidder not found."
+            )
 
         criterion = self.criteria.find_by_id(
             criterion_id
         )
 
         if criterion is None:
-            raise ValueError("Criterion not found.")
+            raise ValueError(
+                "Criterion not found."
+            )
 
         if bidder.tender_id != criterion.tender_id:
             raise ValueError(
@@ -66,21 +99,28 @@ class EvaluationService:
             bidder_text
         )
 
+        logger.info(
+            "AI Result : %s",
+            ai_result
+        )
+
+        status = self.normalize_status(
+            ai_result["status"]
+        )
+
         return self.results.save_result(
             bidder_id=bidder.id,
             criterion_id=criterion.id,
-            status=EvaluationStatus(
-                ai_result["status"]
-            ),
+            status=status,
             confidence=ai_result["confidence"],
             matched_text=ai_result["matched_text"],
             remarks=ai_result["remarks"]
         )
 
     def evaluate_bidder(
-    self,
-    bidder_id
-):
+        self,
+        bidder_id
+    ):
 
         bidder = self.bidders.find_by_id(
             bidder_id
@@ -150,29 +190,28 @@ class EvaluationService:
 
             })
 
-        
         return {
 
-    "bidder_id": bidder.id,
+            "bidder_id": bidder.id,
 
-    "bidder_name": bidder.bidder_name,
+            "bidder_name": bidder.bidder_name,
 
-    "summary": {
+            "summary": {
 
-        "total_criteria": len(criteria),
+                "total_criteria": len(criteria),
 
-        "complied": complied,
+                "complied": complied,
 
-        "partially_complied": partial,
+                "partially_complied": partial,
 
-        "not_complied": not_complied,
+                "not_complied": not_complied,
 
-        "not_found": not_found,
+                "not_found": not_found,
 
-        "needs_manual_review": needs_review
+                "needs_manual_review": needs_review
 
-    },
+            },
 
-    "criteria": evaluation_details
+            "criteria": evaluation_details
 
-}
+        }
