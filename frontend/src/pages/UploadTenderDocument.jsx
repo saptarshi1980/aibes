@@ -13,21 +13,50 @@ function UploadTenderDocument() {
 
     const [file, setFile] = useState(null);
 
+    // async function upload() {
+
+    //     if (!file) {
+
+    //         alert("Please select a file.");
+
+    //         return;
+
+    //     }
+
+    //     const formData = new FormData();
+
+    //     formData.append("document_type", documentType);
+
+    //     formData.append("file", file);
+
+    //     await uploadTenderDocument(
+    //         tenderId,
+    //         formData
+    //     );
+
+    //     alert("Document uploaded successfully.");
+
+    //     navigate("/tenders/" + tenderId);
+
+    // }
+
     async function upload() {
 
-        if (!file) {
+    if (!file) {
 
-            alert("Please select a file.");
+        alert("Please select a file.");
 
-            return;
+        return;
 
-        }
+    }
 
-        const formData = new FormData();
+    const formData = new FormData();
 
-        formData.append("document_type", documentType);
+    formData.append("document_type", documentType);
 
-        formData.append("file", file);
+    formData.append("file", file);
+
+    try {
 
         await uploadTenderDocument(
             tenderId,
@@ -39,10 +68,29 @@ function UploadTenderDocument() {
         navigate("/tenders/" + tenderId);
 
     }
+    catch (err) {
+
+        if (err.response?.data?.detail) {
+
+            alert(err.response.data.detail);
+
+        }
+        else {
+
+            alert("Unable to upload document.");
+
+            console.error(err);
+
+        }
+
+    }
+
+}
 
     return (
 
         <div className="container mt-4">
+
 
             <div className="card">
 

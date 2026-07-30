@@ -5,6 +5,7 @@ from app.domain.tender import Tender
 from app.enums.tender_status import TenderStatus
 from app.repositories.tender_repository import TenderRepository
 from app.utils.storage_manager import StorageManager
+from fastapi import HTTPException
 
 
 class TenderService:
@@ -17,9 +18,10 @@ class TenderService:
         if self.repository.exists_by_tender_number(
             request.tender_number
         ):
-            raise ValueError(
-                "Tender number already exists."
-            )
+            raise HTTPException(
+    status_code=400,
+    detail="Tender number already exists."
+)
 
         tender = Tender(
             id=uuid4(),

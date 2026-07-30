@@ -8,14 +8,44 @@ function CreateTender() {
 
     const navigate = useNavigate();
 
+    // async function saveTender(data) {
+
+    //     await createTender(data);
+
+    //     alert("Tender created successfully.");
+
+    //     navigate("/tenders");
+    // }
+
     async function saveTender(data) {
+
+    try {
 
         await createTender(data);
 
         alert("Tender created successfully.");
 
         navigate("/tenders");
+
     }
+    catch (err) {
+
+        if (err.response?.data?.detail) {
+
+            alert(err.response.data.detail);
+
+        }
+        else {
+
+            alert("Unable to create Tender.");
+
+            console.error(err);
+
+        }
+
+    }
+
+}
 
     return (
 

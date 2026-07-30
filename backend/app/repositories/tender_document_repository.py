@@ -1,7 +1,6 @@
 from uuid import UUID
 
 from sqlalchemy import select
-
 from app.database.connection import SessionLocal
 from app.domain.tender_document import TenderDocument
 from app.enums.document_status import DocumentStatus
@@ -77,3 +76,22 @@ class TenderDocumentRepository:
                 for row in rows
 
             ]
+            
+    def find_nit_by_tender(
+    self,
+    tender_id: UUID
+):
+
+        with SessionLocal() as session:
+
+            return session.scalar(
+
+                select(TenderDocumentModel).where(
+
+                    TenderDocumentModel.tender_id == str(tender_id),
+
+                    TenderDocumentModel.document_type == DocumentType.NIT.value
+
+                )
+
+            )        
