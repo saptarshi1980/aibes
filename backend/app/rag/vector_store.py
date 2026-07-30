@@ -1,6 +1,7 @@
 import os
 
 from langchain_community.vectorstores import FAISS
+import shutil
 
 
 class VectorStore:
@@ -52,3 +53,14 @@ class VectorStore:
             allow_dangerous_deserialization=True
 
         )
+    
+    def delete(
+    self,
+    bidder_id
+):
+
+        folder = f"vector_db/{bidder_id}"
+
+        if os.path.exists(folder):
+
+            shutil.rmtree(folder)    

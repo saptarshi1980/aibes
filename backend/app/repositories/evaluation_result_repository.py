@@ -1,7 +1,7 @@
 from uuid import UUID
 
 from sqlalchemy import select
-
+from sqlalchemy import delete
 from app.database.connection import SessionLocal
 from app.domain.evaluation_result import EvaluationResult
 from app.enums.evaluation_status import EvaluationStatus
@@ -30,6 +30,23 @@ class EvaluationResultRepository:
             session.commit()
 
         return result
+    
+    def delete_by_bidder(
+    self,
+    bidder_id: UUID
+):
+
+        with SessionLocal() as session:
+
+            session.execute(
+
+                delete(EvaluationResultModel).where(
+                    EvaluationResultModel.bidder_id == str(bidder_id)
+                )
+
+            )
+
+            session.commit()
 
     def find_by_bidder(self, bidder_id: UUID):
 

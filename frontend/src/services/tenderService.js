@@ -104,3 +104,61 @@ export async function uploadTenderDocument(
     return response.data;
 
 }
+
+export async function getBidderDocuments(bidderId) {
+
+    const response = await api.get(
+
+        "/bidders/" + bidderId + "/documents"
+
+    );
+
+    return response.data;
+
+}
+
+export async function uploadBidderDocument(
+    bidderId,
+    formData
+) {
+
+    const response = await api.post(
+
+        "/bidders/" + bidderId + "/documents",
+
+        formData,
+
+        {
+            headers: {
+                "Content-Type": "multipart/form-data"
+            }
+        }
+
+    );
+
+    return response.data;
+
+}
+
+export async function evaluateBidder(bidderId) {
+
+    const response = await api.post(
+
+        "/evaluation/bidder/" + bidderId
+
+    );
+
+    return response.data;
+
+}
+
+export async function extractCriteria(tenderId) {
+
+    const response = await api.post(
+        "/criteria/extract/" + tenderId
+    );
+
+    return response.data;
+
+}
+

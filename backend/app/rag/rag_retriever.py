@@ -9,6 +9,15 @@ class RAGRetriever:
         self.embedding = EmbeddingService()
 
         self.vector = VectorStore()
+        
+    def delete_embeddings(
+    self,
+    bidder_id
+):
+
+        self.vector.delete(
+            bidder_id
+        )    
 
     def retrieve(
         self,

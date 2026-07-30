@@ -12,6 +12,15 @@ class EvaluationResultService:
 
     def __init__(self):
         self.repository = EvaluationResultRepository()
+        
+    def delete_results(
+    self,
+    bidder_id
+):
+
+        self.repository.delete_by_bidder(
+            bidder_id
+        )    
 
     def save_result(
         self,

@@ -11,6 +11,8 @@ import EvaluationDetails from "./pages/EvaluationDetails";
 import CreateTender from "./pages/CreateTender";
 import EditTender from "./pages/EditTender";
 import UploadTenderDocument from "./pages/UploadTenderDocument";
+import BidderWorkspace from "./pages/BidderWorkspace";
+import UploadBidderDocument from "./pages/UploadBidderDocument";
 
 function App() {
   return (
@@ -37,6 +39,13 @@ function App() {
         <Route
           path="/tenders/:tenderId/upload-document"
           element={<UploadTenderDocument />}
+        />
+
+        <Route path="/bidders/:bidderId" element={<BidderWorkspace />} />
+
+        <Route
+          path="/bidders/:bidderId/upload"
+          element={<UploadBidderDocument />}
         />
       </Routes>
     </BrowserRouter>

@@ -37,15 +37,36 @@ class StorageManager:
 
         return tender_path
 
+    #@classmethod
+    #def find_tender_folder(cls, tender_id: UUID):
+
+        #for folder in cls.TENDER_ROOT.iterdir():
+
+          #  if folder.is_dir() and folder.name.startswith(str(tender_id)):
+           #     return folder
+
+        #return None
     @classmethod
     def find_tender_folder(cls, tender_id: UUID):
 
+        print("Looking for Tender ID:", tender_id)
+        print("Searching in:", cls.TENDER_ROOT.resolve())
+
+        if not cls.TENDER_ROOT.exists():
+            print("TENDER ROOT DOES NOT EXIST")
+            return None
+
         for folder in cls.TENDER_ROOT.iterdir():
 
+            print("Found folder:", folder.name)
+
             if folder.is_dir() and folder.name.startswith(str(tender_id)):
+                print("MATCH FOUND")
                 return folder
 
-        return None
+        print("NO MATCH FOUND")
+
+        return None    
 
     @classmethod
     def get_tender_documents_path(cls, tender_id: UUID):

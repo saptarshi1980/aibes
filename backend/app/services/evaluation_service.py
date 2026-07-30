@@ -124,6 +124,8 @@ class EvaluationService:
         bidder_id
     ):
 
+       
+        
         bidder = self.bidders.find_by_id(
             bidder_id
         )
@@ -132,6 +134,10 @@ class EvaluationService:
             raise ValueError(
                 "Bidder not found."
             )
+        
+        self.results.delete_results(
+                    bidder.id
+                )    
 
         criteria = self.criteria.find_by_tender(
             bidder.tender_id

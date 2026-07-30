@@ -1,28 +1,27 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-
 import {
   getTender,
   getTenderDocuments,
   getCriteria,
   getBidders,
+  extractCriteria,
 } from "../services/tenderService";
 
 function TenderDetails() {
+
   const { tenderId } = useParams();
 
   const navigate = useNavigate();
 
   const [tender, setTender] = useState(null);
-
   const [documents, setDocuments] = useState([]);
-
   const [criteria, setCriteria] = useState([]);
-
   const [bidders, setBidders] = useState([]);
 
   const [loading, setLoading] = useState(true);
+  const [extracting, setExtracting] = useState(false);
 
   const [error, setError] = useState("");
 
@@ -31,158 +30,305 @@ function TenderDetails() {
   }, []);
 
   async function loadTender() {
-    try {
-      const tenderData = await getTender(tenderId);
 
+    try {
+
+      const tenderData = await getTender(tenderId);
       setTender(tenderData);
 
       const docs = await getTenderDocuments(tenderId);
-
       setDocuments(docs);
+
+      const criteriaList = await getCriteria(tenderId);
+      setCriteria(criteriaList);
+
+      const bidderList = await getBidders(tenderId);
+      setBidders(bidderList);
+
+    } catch (err) {
+
+      console.error(err);
+
+      setError("Unable to load Tender.");
+
+    } finally {
+
+      setLoading(false);
+
+    }
+
+  }
+
+  async function handleExtractCriteria() {
+
+    try {
+
+      setExtracting(true);
+
+      await extractCriteria(tenderId);
 
       const criteriaList = await getCriteria(tenderId);
 
       setCriteria(criteriaList);
 
-      const bidderList = await getBidders(tenderId);
+      alert("Criteria extracted successfully.");
 
-      setBidders(bidderList);
     } catch (err) {
+
       console.error(err);
 
-      setError("Unable to load Tender.");
+      alert("Criteria extraction failed.");
+
     } finally {
-      setLoading(false);
+
+      setExtracting(false);
+
     }
+
   }
 
   if (loading) {
+
     return <h3>Loading...</h3>;
+
   }
 
   if (error) {
+
     return <div className="alert alert-danger">{error}</div>;
+
   }
 
   return (
+
     <div className="container">
+
       <h2 className="mb-4">Tender Details</h2>
 
+      {/* Tender Information */}
+
       <div className="card mb-4">
+
         <div className="card-header bg-primary text-white">
           Tender Information
         </div>
 
         <div className="card-body">
+
           <table className="table">
+
             <tbody>
+
               <tr>
                 <th width="25%">Tender Number</th>
-
                 <td>{tender.tender_number}</td>
               </tr>
 
               <tr>
                 <th>Title</th>
-
                 <td>{tender.title}</td>
               </tr>
 
               <tr>
                 <th>Department</th>
-
                 <td>{tender.department}</td>
               </tr>
 
               <tr>
                 <th>Issue Date</th>
-
                 <td>{tender.issue_date}</td>
               </tr>
 
               <tr>
                 <th>Closing Date</th>
-
                 <td>{tender.closing_date}</td>
               </tr>
 
               <tr>
                 <th>Status</th>
-
                 <td>
-                  <span className="badge bg-success">{tender.status}</span>
+                  <span className="badge bg-success">
+                    {tender.status}
+                  </span>
                 </td>
               </tr>
+
             </tbody>
+
           </table>
+
         </div>
+
       </div>
 
+      {/* Tender Documents */}
+
       <div className="card mb-4">
+
         <div className="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
+
           <span>Tender Documents</span>
 
           <button
             className="btn btn-light btn-sm"
-            onClick={() => navigate(`/tenders/${tenderId}/upload-document`)}
+            onClick={() =>
+              navigate(`/tenders/${tenderId}/upload-document`)
+            }
           >
             + Upload Document
           </button>
+
         </div>
 
         <div className="card-body">
+
           {documents.length === 0 ? (
-            <div className="alert alert-warning mb-0">
-              No documents uploaded for this tender.
+
+            <div className="alert alert-warning">
+              No documents uploaded.
             </div>
+
           ) : (
-            <table className="table table-bordered table-hover">
-              <thead className="table-light">
-                <tr>
-                  <th>File Name</th>
 
-                  <th>Document Type</th>
+            documents.map((doc) => (
 
-                  <th>Status</th>
+              <div
+                key={doc.id}
+                className="card mb-3 shadow-sm"
+              >
 
-                  <th>Uploaded At</th>
-                </tr>
-              </thead>
+                <div className="card-body">
 
-              <tbody>
-                {documents.map((doc) => (
-                  <tr key={doc.id}>
-                    <td>{doc.original_filename}</td>
+                  <div className="d-flex justify-content-between">
 
-                    <td>{doc.document_type}</td>
+                    <div>
 
-                    <td>
-                      <span className="badge bg-success">{doc.status}</span>
-                    </td>
+                      <h5 className="mb-3">
 
-                    <td>{doc.uploaded_at}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                        📄 {doc.original_filename}
+
+                      </h5>
+
+                      <table className="table table-sm table-borderless">
+
+                        <tbody>
+
+                          <tr>
+
+                            <th width="140">Type</th>
+
+                            <td>{doc.document_type}</td>
+
+                          </tr>
+
+                          <tr>
+
+                            <th>Status</th>
+
+                            <td>
+
+                              <span className="badge bg-success">
+
+                                {doc.status}
+
+                              </span>
+
+                            </td>
+
+                          </tr>
+
+                          <tr>
+
+                            <th>Uploaded</th>
+
+                            <td>
+
+                              {new Date(
+                                doc.uploaded_at
+                              ).toLocaleString()}
+
+                            </td>
+
+                          </tr>
+
+                        </tbody>
+
+                      </table>
+
+                    </div>
+
+                    <div className="text-end">
+
+                      <button
+                        className="btn btn-outline-primary btn-sm mb-2"
+                      >
+                        View
+                      </button>
+
+                      <br />
+
+                      <button
+                        className="btn btn-outline-success btn-sm"
+                      >
+                        Download
+                      </button>
+
+                    </div>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+            ))
+
           )}
+
         </div>
+
       </div>
 
+      {/* Evaluation Criteria */}
+
       <div className="card mb-4">
-        <div className="card-header bg-secondary text-white">
-          Evaluation Criteria
+
+        <div className="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
+
+          <span>Evaluation Criteria</span>
+
+          <button
+            className="btn btn-warning btn-sm"
+            onClick={handleExtractCriteria}
+            disabled={extracting}
+          >
+
+            {extracting
+              ? "Extracting..."
+              : "Extract Criteria"}
+
+          </button>
+
         </div>
 
         <div className="card-body">
+
           {criteria.length === 0 ? (
-            <div className="alert alert-warning mb-0">
+
+            <div className="alert alert-warning">
+
               No criteria extracted.
+
             </div>
+
           ) : (
+
             <table className="table table-bordered table-hover">
+
               <thead className="table-light">
+
                 <tr>
+
                   <th width="5%">#</th>
 
                   <th width="30%">Title</th>
@@ -190,12 +336,17 @@ function TenderDetails() {
                   <th>Description</th>
 
                   <th width="12%">Mandatory</th>
+
                 </tr>
+
               </thead>
 
               <tbody>
+
                 {criteria.map((c, index) => (
+
                   <tr key={c.id}>
+
                     <td>{index + 1}</td>
 
                     <td>{c.title}</td>
@@ -203,35 +354,79 @@ function TenderDetails() {
                     <td>{c.description}</td>
 
                     <td>
+
                       {c.mandatory ? (
-                        <span className="badge bg-danger">Yes</span>
+
+                        <span className="badge bg-danger">
+
+                          Yes
+
+                        </span>
+
                       ) : (
-                        <span className="badge bg-secondary">No</span>
+
+                        <span className="badge bg-secondary">
+
+                          No
+
+                        </span>
+
                       )}
+
                     </td>
+
                   </tr>
+
                 ))}
+
               </tbody>
+
             </table>
+
           )}
+
         </div>
+
       </div>
 
+      {/* Registered Bidders */}
+
       <div className="card mb-4">
-        <div className="card-header bg-secondary text-white">
-          Registered Bidders
+
+        <div className="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
+
+          <span>Registered Bidders</span>
+
+          <button
+            className="btn btn-light btn-sm"
+            onClick={() =>
+              navigate(`/tenders/${tenderId}/register-bidder`)
+            }
+          >
+            + Register Bidder
+          </button>
+
         </div>
 
         <div className="card-body">
+
           {bidders.length === 0 ? (
-            <div className="alert alert-warning mb-0">
+
+            <div className="alert alert-warning">
+
               No bidders registered.
+
             </div>
+
           ) : (
+
             <table className="table table-bordered table-hover">
+
               <thead className="table-light">
+
                 <tr>
-                  <th width="5%">#</th>
+
+                  <th>#</th>
 
                   <th>Bidder Name</th>
 
@@ -241,13 +436,18 @@ function TenderDetails() {
 
                   <th>Phone</th>
 
-                  <th width="10%">Action</th>
+                  <th>Action</th>
+
                 </tr>
+
               </thead>
 
               <tbody>
+
                 {bidders.map((bidder, index) => (
+
                   <tr key={bidder.id}>
+
                     <td>{index + 1}</td>
 
                     <td>{bidder.bidder_name}</td>
@@ -259,22 +459,36 @@ function TenderDetails() {
                     <td>{bidder.phone}</td>
 
                     <td>
+
                       <button
                         className="btn btn-success btn-sm"
-                        onClick={() => navigate("/evaluation/" + bidder.id)}
+                        onClick={() =>
+                          navigate("/bidders/" + bidder.id)
+                        }
                       >
                         View
                       </button>
+
                     </td>
+
                   </tr>
+
                 ))}
+
               </tbody>
+
             </table>
+
           )}
+
         </div>
+
       </div>
+
     </div>
+
   );
+
 }
 
 export default TenderDetails;

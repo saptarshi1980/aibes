@@ -28,7 +28,7 @@ class Config:
 
     LLM_MODEL = os.getenv(
     "LLM_MODEL",
-    "qwen2.5:14b"    
+    "qwen2.5:7b"    
 )
 
     GROQ_API_KEY = os.getenv(

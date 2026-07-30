@@ -78,3 +78,33 @@ class CriterionRepository:
                 for row in rows
 
             ]
+     
+    def delete_by_tender(
+    self,
+    tender_id: UUID
+):
+
+        with SessionLocal() as session:
+
+            session.query(CriterionModel).filter(
+                CriterionModel.tender_id == str(tender_id)
+            ).delete()
+
+            session.commit()  
+    
+    def delete_by_tender(self, tender_id: UUID):
+
+        with SessionLocal() as session:
+
+            rows = session.scalars(
+
+                select(CriterionModel).where(
+                    CriterionModel.tender_id == str(tender_id)
+                )
+
+            ).all()
+
+            for row in rows:
+                session.delete(row)
+
+            session.commit()              

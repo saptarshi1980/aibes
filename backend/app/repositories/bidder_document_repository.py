@@ -85,3 +85,35 @@ class BidderDocumentRepository:
                 status=DocumentStatus(model.status),
                 uploaded_at=model.uploaded_at
             )
+            
+        def find_technical_bid(
+        self,
+        bidder_id: UUID
+    ):
+
+            return self.find_by_document_type(
+                bidder_id,
+                DocumentType.TECHNICAL_BID
+            )
+
+
+    def delete(
+        self,
+        document_id: UUID
+    ):
+
+        with SessionLocal() as session:
+
+            model = session.get(
+                BidderDocumentModel,
+                str(document_id)
+            )
+
+            if model is None:
+                return False
+
+            session.delete(model)
+
+            session.commit()
+
+            return True
