@@ -22,6 +22,9 @@ from app.models.evaluation_result_model import EvaluationResultModel
 from app.api.evaluation import router as evaluation_router
 from app.api.retriever import router as retriever_router
 from app.api.bidder_index import router as bidder_index_router
+from app.api.evaluation_report import router as evaluation_report_router
+from app.api.tender_report import router as tender_report_router
+from app.api.tender_excel_report import router as tender_excel_router
 
 app = FastAPI(
     title="AI Assisted Bid Evaluation System",
@@ -65,6 +68,16 @@ app.include_router(
 app.include_router(
     bidder_delete_router
 )
+
+app.include_router(
+    evaluation_report_router
+)
+
+app.include_router(tender_report_router)
+app.include_router(
+    tender_excel_router
+)
+
 @app.get("/")
 def home():
     return {

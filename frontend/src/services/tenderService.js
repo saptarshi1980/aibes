@@ -240,3 +240,53 @@ export async function deleteBidder(bidderId) {
     return response.data;
 
 }
+
+export async function getTenderEvaluationReport(
+  tenderId
+) {
+
+  const response = await api.get(
+
+    "/evaluation/tender/" +
+    tenderId +
+    "/report"
+
+  );
+
+  return response.data;
+
+}
+
+export async function downloadTenderExcelReport(
+    tenderId
+) {
+
+    const response = await api.get(
+
+        "/reports/tender/" +
+        tenderId +
+        "/excel",
+
+        {
+
+            responseType: "blob"
+
+        }
+
+    );
+
+    return response.data;
+
+}
+
+
+
+export async function downloadTenderPDFReport(tenderId) {
+    const response = await api.get(
+        `/tenders/${tenderId}/report`,
+        {
+            responseType: "blob"
+        }
+    );
+    return response.data;
+}

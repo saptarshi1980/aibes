@@ -11,7 +11,7 @@ import {
   deleteBidder,
   getTenderEvaluationReport,
   downloadTenderExcelReport,
-  downloadTenderPDFReport,
+  
 } from "../services/tenderService";
 
 function TenderDetails() {
@@ -136,35 +136,22 @@ function TenderDetails() {
             className="btn btn-light btn-sm"
             onClick={async () => {
               try {
-                const blob = await downloadTenderPDFReport(tenderId);
-                const url = window.URL.createObjectURL(blob);
-                const link = document.createElement("a");
-                link.href = url;
-                link.download = `Tender_Evaluation_Report_${tenderId}.pdf`;
-                link.click();
-                window.URL.revokeObjectURL(url);
-              } catch (err) {
-                console.error(err);
-                alert("Unable to download PDF report.");
-              }
-            }}
-          >
-            Download PDF Report
-          </button>
-
-          <button
-            className="btn btn-light btn-sm"
-            onClick={async () => {
-              try {
                 const blob = await downloadTenderExcelReport(tenderId);
+
                 const url = window.URL.createObjectURL(blob);
+
                 const link = document.createElement("a");
+
                 link.href = url;
+
                 link.download = "Tender_Evaluation_Report.xlsx";
+
                 link.click();
+
                 window.URL.revokeObjectURL(url);
               } catch (err) {
                 console.error(err);
+
                 alert("Unable to download Excel report.");
               }
             }}
@@ -172,6 +159,7 @@ function TenderDetails() {
             Download Excel Report
           </button>
         </div>
+        
 
         <div className="card-body">
           <table className="table">
