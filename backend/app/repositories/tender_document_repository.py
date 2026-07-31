@@ -1,6 +1,7 @@
 from uuid import UUID
 
 from sqlalchemy import select
+
 from app.database.connection import SessionLocal
 from app.domain.tender_document import TenderDocument
 from app.enums.document_status import DocumentStatus
@@ -76,11 +77,11 @@ class TenderDocumentRepository:
                 for row in rows
 
             ]
-            
+
     def find_nit_by_tender(
-    self,
-    tender_id: UUID
-):
+        self,
+        tender_id: UUID
+    ):
 
         with SessionLocal() as session:
 
@@ -94,4 +95,29 @@ class TenderDocumentRepository:
 
                 )
 
-            )        
+            )
+
+    # --------------------------------------------------------
+    # NEW
+    # --------------------------------------------------------
+
+    def delete(
+        self,
+        document_id: UUID
+    ):
+
+        with SessionLocal() as session:
+
+            model = session.get(
+                TenderDocumentModel,
+                str(document_id)
+            )
+
+            if model is None:
+                return False
+
+            session.delete(model)
+
+            session.commit()
+
+            return True

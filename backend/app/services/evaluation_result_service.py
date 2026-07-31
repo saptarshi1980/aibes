@@ -54,3 +54,14 @@ class EvaluationResultService:
         return self.repository.find_by_bidder(
             bidder_id
         )
+        
+    def is_bidder_evaluated(
+    self,
+    bidder_id
+):
+
+        results = self.repository.find_by_bidder(
+            bidder_id
+        )
+
+        return len(results) > 0    

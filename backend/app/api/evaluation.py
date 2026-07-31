@@ -70,3 +70,19 @@ def get_results(
     return service.get_results(
         bidder_id
     )        
+    
+@router.get(
+    "/bidder/{bidder_id}/status"
+)
+
+def evaluation_status(
+    bidder_id: UUID
+):
+
+    evaluated = service.results.is_bidder_evaluated(
+        bidder_id
+    )
+
+    return {
+        "evaluated": evaluated
+    }    

@@ -162,3 +162,81 @@ export async function extractCriteria(tenderId) {
 
 }
 
+export async function deleteTenderDocument(
+    documentId
+) {
+
+    const response = await api.delete(
+
+        "/tenders/documents/" + documentId
+
+    );
+
+    return response.data;
+
+}
+
+export async function createBidder(data) {
+
+    const response = await api.post(
+
+        "/bidders",
+
+        data
+
+    );
+
+    return response.data;
+
+}
+
+export async function generateBidderIndex(
+    bidderId
+) {
+
+    const response = await api.post(
+
+        "/bidders/" + bidderId + "/generate-index"
+
+    );
+
+    return response.data;
+
+}
+
+export async function getEmbeddingStatus(
+    bidderId
+) {
+
+    const response = await api.get(
+
+        "/bidders/" +
+        bidderId +
+        "/embedding-status"
+
+    );
+
+    return response.data;
+
+}
+
+export async function getEvaluationStatus(bidderId) {
+
+  const response = await api.get(
+    `/evaluation/bidder/${bidderId}/status`
+  );
+
+  return response.data;
+}
+
+export async function deleteBidder(bidderId) {
+
+    const response = await api.delete(
+
+        "/bidders/" + bidderId
+
+    );
+
+    return response.data;
+
+}

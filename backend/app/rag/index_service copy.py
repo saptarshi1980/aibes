@@ -2,7 +2,6 @@ from app.rag.document_loader import DocumentLoader
 from app.rag.chunker import Chunker
 from app.rag.embedding_service import EmbeddingService
 from app.rag.vector_store import VectorStore
-import time
 
 
 class IndexService:
@@ -18,55 +17,37 @@ class IndexService:
         self.vector = VectorStore()
 
     def build_index(
-        self,
-        bidder_id,
-        file_path
-    ):
 
-        t0 = time.time()
+            self,
+
+            bidder_id,
+
+            file_path
+
+    ):
 
         print("Loading document...")
 
         text = self.loader.load(file_path)
 
         print("Characters:", len(text))
-        print("Load Time:", round(time.time() - t0, 2), "sec")
-
-        t1 = time.time()
 
         chunks = self.chunker.split(text)
 
         print("Chunks:", len(chunks))
-        print("Chunk Time:", round(time.time() - t1, 2), "sec")
-
-        t2 = time.time()
 
         embedding = self.embedding.get()
-
-        print(
-            "Embedding model loaded in",
-            round(time.time() - t2, 2),
-            "sec"
-        )
-
-        t3 = time.time()
 
         print("Creating embeddings...")
 
         self.vector.save(
+
             bidder_id,
+
             chunks,
+
             embedding
+
         )
 
-        print(
-            "Embedding generation took",
-            round(time.time() - t3, 2),
-            "sec"
-        )
-
-        print(
-            "TOTAL:",
-            round(time.time() - t0, 2),
-            "sec"
-        )
+        print("Vector DB created successfully.")

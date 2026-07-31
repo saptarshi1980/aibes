@@ -13,6 +13,7 @@ import EditTender from "./pages/EditTender";
 import UploadTenderDocument from "./pages/UploadTenderDocument";
 import BidderWorkspace from "./pages/BidderWorkspace";
 import UploadBidderDocument from "./pages/UploadBidderDocument";
+import RegisterBidder from "./pages/RegisterBidder";
 
 function App() {
   return (
@@ -46,6 +47,11 @@ function App() {
         <Route
           path="/bidders/:bidderId/upload"
           element={<UploadBidderDocument />}
+        />
+
+        <Route
+          path="/tenders/:tenderId/register-bidder"
+          element={<RegisterBidder />}
         />
       </Routes>
     </BrowserRouter>

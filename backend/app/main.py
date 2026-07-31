@@ -10,17 +10,18 @@ from app.api.llm_test import router as llm_router
 from app.api.ai_test import router as ai_test_router
 from app.database.base import Base
 from app.database.connection import engine
-
+from app.api.bidder_status import router as bidder_status_router
 from app.models.tender_model import TenderModel
 from app.models.bidder_model import BidderModel
 from app.api.bidders import router as bidder_router
 from app.models.bidder_document_model import BidderDocumentModel
 from app.api.bidder_documents import router as bidder_document_router
-
+from app.api.bidder_delete import router as bidder_delete_router
 from app.models.criterion_model import CriterionModel
 from app.models.evaluation_result_model import EvaluationResultModel
 from app.api.evaluation import router as evaluation_router
 from app.api.retriever import router as retriever_router
+from app.api.bidder_index import router as bidder_index_router
 
 app = FastAPI(
     title="AI Assisted Bid Evaluation System",
@@ -54,7 +55,16 @@ app.include_router(
     evaluation_router
 )
 app.include_router(retriever_router)
+app.include_router(
+    bidder_index_router
+)
+app.include_router(
+    bidder_status_router
+)
 
+app.include_router(
+    bidder_delete_router
+)
 @app.get("/")
 def home():
     return {

@@ -4,6 +4,9 @@ import {
   getBidder,
   getBidderDocuments,
   evaluateBidder,
+  generateBidderIndex,
+  getEmbeddingStatus,
+  getEvaluationStatus,
 } from "../services/tenderService";
 
 function BidderWorkspace() {
@@ -19,23 +22,108 @@ function BidderWorkspace() {
 
   const [evaluating, setEvaluating] = useState(false);
 
+  const [indexing, setIndexing] = useState(false);
+  const [alreadyEvaluated, setAlreadyEvaluated] = useState(false);
+
+  const [embeddingsGenerated, setEmbeddingsGenerated] = useState(false);
+
   useEffect(() => {
     load();
   }, []);
 
+  // async function load() {
+
+  //    console.log("LOAD CALLED");
+
+  //   setLoading(true);
+
+  //   const bidderData = await getBidder(bidderId);
+
+  //   setBidder(bidderData);
+
+  //   const docs = await getBidderDocuments(bidderId);
+
+  //   setDocuments(docs);
+
+  //   //
+  //   // Embedding Status
+  //   //
+  //   try {
+  //     const status = await getEmbeddingStatus(bidderId);
+  //     console.log("Embedding API Response:", status);
+
+  //     console.log("Embedding Status API:", status);
+  //     console.log("embeddingsGenerated should become:", status.generated);
+
+  //     setEmbeddingsGenerated(status.generated);
+
+  //     console.log("Embedding State:", status.generated);
+  //     setEmbeddingsGenerated(status.generated);
+  //   } catch {
+  //     setEmbeddingsGenerated(false);
+  //   }
+
+  //   //
+  //   // Evaluation Status
+  //   //
+  //   try {
+  //     const status = await getEvaluationStatus(bidderId);
+
+  //     setAlreadyEvaluated(status.evaluated);
+  //   } catch {
+  //     setAlreadyEvaluated(false);
+  //   }
+
+  //   setLoading(false);
+  // }
+
   async function load() {
-    const bidderData = await getBidder(bidderId);
+    console.log("LOAD CALLED");
 
-    setBidder(bidderData);
+    setLoading(true);
 
-    const docs = await getBidderDocuments(bidderId);
+    try {
+      console.log("Calling getBidder...");
 
-    setDocuments(docs);
+      const bidderData = await getBidder(bidderId);
+
+      console.log("getBidder DONE");
+
+      setBidder(bidderData);
+
+      console.log("Calling getBidderDocuments...");
+
+      const docs = await getBidderDocuments(bidderId);
+
+      console.log("getBidderDocuments DONE");
+
+      setDocuments(docs);
+
+      console.log("Calling getEmbeddingStatus...");
+
+      const status = await getEmbeddingStatus(bidderId);
+
+      console.log("getEmbeddingStatus DONE", status);
+
+      setEmbeddingsGenerated(status.generated);
+
+      console.log("Calling getEvaluationStatus...");
+
+      const evalStatus = await getEvaluationStatus(bidderId);
+
+      console.log("getEvaluationStatus DONE", evalStatus);
+
+      setAlreadyEvaluated(evalStatus.evaluated);
+    } catch (err) {
+      console.error("LOAD ERROR", err);
+    }
 
     setLoading(false);
   }
 
   if (loading) return <h3>Loading...</h3>;
+
+  const technicalBidUploaded = documents.length > 0;
 
   return (
     <div className="container mt-4">
@@ -83,6 +171,7 @@ function BidderWorkspace() {
 
           <button
             className="btn btn-light btn-sm"
+            disabled={indexing}
             onClick={() => navigate(`/bidders/${bidderId}/upload`)}
           >
             + Upload Technical Bid
@@ -122,27 +211,89 @@ function BidderWorkspace() {
         </div>
       </div>
 
-      <button
-        className="btn btn-success"
-        disabled={evaluating}
-        onClick={async () => {
-          try {
-            setEvaluating(true);
+      <div className="card mb-4">
+        <div className="card-header">Workflow Status</div>
 
-            await evaluateBidder(bidderId);
+        <div className="card-body">
+          <p>
+            <strong>Technical Bid</strong>{" "}
+            {technicalBidUploaded ? (
+              <span className="badge bg-success ms-2">Uploaded</span>
+            ) : (
+              <span className="badge bg-danger ms-2">Not Uploaded</span>
+            )}
+          </p>
 
-            navigate("/evaluation/" + bidderId);
-          } catch (err) {
-            console.error(err);
+          <p>
+            <strong>Embeddings</strong>{" "}
+            {embeddingsGenerated ? (
+              <span className="badge bg-success ms-2">Generated</span>
+            ) : (
+              <span className="badge bg-warning text-dark ms-2">Pending</span>
+            )}
+          </p>
+        </div>
+      </div>
 
-            alert("Evaluation failed.");
-          } finally {
-            setEvaluating(false);
-          }
-        }}
-      >
-        {evaluating ? "Evaluating..." : "Evaluate Bidder"}
-      </button>
+      {indexing && (
+        <div className="alert alert-info">
+          <strong>Generating embeddings...</strong>
+          <br />
+          This may take around one minute.
+        </div>
+      )}
+
+      <div className="d-flex gap-2">
+        <button
+          className="btn btn-primary"
+          disabled={indexing || !technicalBidUploaded}
+          onClick={async () => {
+            try {
+              setIndexing(true);
+
+              await generateBidderIndex(bidderId);
+
+              await load();
+
+              alert("Embeddings generated successfully.");
+            } catch (err) {
+              console.error(err);
+
+              alert("Embedding generation failed.");
+            } finally {
+              setIndexing(false);
+            }
+          }}
+        >
+          {indexing ? "Generating..." : "Generate Embeddings"}
+        </button>
+
+        <button
+          className="btn btn-success"
+          disabled={evaluating || !embeddingsGenerated || alreadyEvaluated}
+          onClick={async () => {
+            try {
+              setEvaluating(true);
+
+              await evaluateBidder(bidderId);
+
+              navigate("/evaluation/" + bidderId);
+            } catch (err) {
+              console.error(err);
+
+              alert("Evaluation failed.");
+            } finally {
+              setEvaluating(false);
+            }
+          }}
+        >
+          {evaluating
+            ? "Evaluating..."
+            : alreadyEvaluated
+              ? "Already Evaluated"
+              : "Evaluate Bidder"}
+        </button>
+      </div>
     </div>
   );
 }

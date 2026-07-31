@@ -14,8 +14,12 @@ service = TenderDocumentService()
 
 
 @router.get("/{tender_id}/documents")
-def get_documents(tender_id: UUID):
-    return service.get_documents(tender_id)
+def get_documents(
+    tender_id: UUID
+):
+    return service.get_documents(
+        tender_id
+    )
 
 
 @router.post("/{tender_id}/documents")
@@ -28,4 +32,13 @@ def upload_document(
         tender_id,
         document_type,
         file
+    )
+
+
+@router.delete("/documents/{document_id}")
+def delete_document(
+    document_id: UUID
+):
+    return service.delete_document(
+        document_id
     )

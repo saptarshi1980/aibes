@@ -78,3 +78,24 @@ class BidderRepository:
                 for row in rows
 
             ]
+            
+    def delete(
+        self,
+        bidder_id: UUID
+    ):
+
+        with SessionLocal() as session:
+
+            model = session.get(
+                BidderModel,
+                str(bidder_id)
+                )
+
+            if model is None:
+                return False
+
+            session.delete(model)
+
+            session.commit()
+
+        return True        

@@ -7,10 +7,11 @@ import {
   getCriteria,
   getBidders,
   extractCriteria,
+  deleteTenderDocument,
+  deleteBidder,
 } from "../services/tenderService";
 
 function TenderDetails() {
-
   const { tenderId } = useParams();
 
   const navigate = useNavigate();
@@ -30,9 +31,7 @@ function TenderDetails() {
   }, []);
 
   async function loadTender() {
-
     try {
-
       const tenderData = await getTender(tenderId);
       setTender(tenderData);
 
@@ -44,25 +43,17 @@ function TenderDetails() {
 
       const bidderList = await getBidders(tenderId);
       setBidders(bidderList);
-
     } catch (err) {
-
       console.error(err);
 
       setError("Unable to load Tender.");
-
     } finally {
-
       setLoading(false);
-
     }
-
   }
 
   async function handleExtractCriteria() {
-
     try {
-
       setExtracting(true);
 
       await extractCriteria(tenderId);
@@ -72,53 +63,64 @@ function TenderDetails() {
       setCriteria(criteriaList);
 
       alert("Criteria extracted successfully.");
-
     } catch (err) {
-
       console.error(err);
 
       alert("Criteria extraction failed.");
-
     } finally {
-
       setExtracting(false);
+    }
+  }
 
+  async function handleDeleteDocument(documentId) {
+    const confirmed = window.confirm(
+      "Delete the Active NIT?\n\n" +
+        "This will remove:\n\n" +
+        "• PDF\n" +
+        "• OCR Text\n" +
+        "• Extracted Criteria\n\n" +
+        "The Tender will remain.",
+    );
+
+    if (!confirmed) {
+      return;
     }
 
+    try {
+      await deleteTenderDocument(documentId);
+
+      alert("NIT deleted successfully.");
+
+      await loadTender();
+    } catch (err) {
+      console.error(err);
+
+      alert(err.response?.data?.detail || "Unable to delete NIT.");
+    }
   }
 
   if (loading) {
-
     return <h3>Loading...</h3>;
-
   }
 
   if (error) {
-
     return <div className="alert alert-danger">{error}</div>;
-
   }
 
   return (
-
     <div className="container">
-
       <h2 className="mb-4">Tender Details</h2>
 
       {/* Tender Information */}
 
       <div className="card mb-4">
-
         <div className="card-header bg-primary text-white">
           Tender Information
         </div>
 
         <div className="card-body">
-
           <table className="table">
-
             <tbody>
-
               <tr>
                 <th width="25%">Tender Number</th>
                 <td>{tender.tender_number}</td>
@@ -147,154 +149,104 @@ function TenderDetails() {
               <tr>
                 <th>Status</th>
                 <td>
-                  <span className="badge bg-success">
-                    {tender.status}
-                  </span>
+                  <span className="badge bg-success">{tender.status}</span>
                 </td>
               </tr>
-
             </tbody>
-
           </table>
-
         </div>
-
       </div>
 
       {/* Tender Documents */}
 
       <div className="card mb-4">
-
         <div className="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
-
           <span>Tender Documents</span>
 
           <button
             className="btn btn-light btn-sm"
-            onClick={() =>
-              navigate(`/tenders/${tenderId}/upload-document`)
-            }
+            onClick={() => navigate(`/tenders/${tenderId}/upload-document`)}
           >
             + Upload Document
           </button>
-
         </div>
 
         <div className="card-body">
-
           {documents.length === 0 ? (
-
-            <div className="alert alert-warning">
-              No documents uploaded.
-            </div>
-
+            <div className="alert alert-warning">No documents uploaded.</div>
           ) : (
-
             documents.map((doc) => (
-
-              <div
-                key={doc.id}
-                className="card mb-3 shadow-sm"
-              >
-
+              <div key={doc.id} className="card mb-3 shadow-sm">
                 <div className="card-body">
-
                   <div className="d-flex justify-content-between">
-
                     <div>
-
-                      <h5 className="mb-3">
-
-                        📄 {doc.original_filename}
-
-                      </h5>
+                      <h5 className="mb-3">📄 {doc.original_filename}</h5>
 
                       <table className="table table-sm table-borderless">
-
                         <tbody>
-
                           <tr>
-
                             <th width="140">Type</th>
 
                             <td>{doc.document_type}</td>
-
                           </tr>
 
                           <tr>
-
                             <th>Status</th>
 
                             <td>
-
                               <span className="badge bg-success">
-
                                 {doc.status}
-
                               </span>
-
                             </td>
-
                           </tr>
 
                           <tr>
-
                             <th>Uploaded</th>
 
                             <td>
-
-                              {new Date(
-                                doc.uploaded_at
-                              ).toLocaleString()}
-
+                              {new Date(doc.uploaded_at).toLocaleString()}
                             </td>
-
                           </tr>
-
                         </tbody>
-
                       </table>
-
                     </div>
 
                     <div className="text-end">
-
-                      <button
-                        className="btn btn-outline-primary btn-sm mb-2"
-                      >
+                      <button className="btn btn-outline-primary btn-sm mb-2">
                         View
                       </button>
 
                       <br />
 
-                      <button
-                        className="btn btn-outline-success btn-sm"
-                      >
+                      <button className="btn btn-outline-success btn-sm mb-2">
                         Download
                       </button>
 
+                      {doc.document_type === "NIT" && (
+                        <>
+                          <br />
+
+                          <button
+                            className="btn btn-outline-danger btn-sm"
+                            onClick={() => handleDeleteDocument(doc.id)}
+                          >
+                            Delete NIT
+                          </button>
+                        </>
+                      )}
                     </div>
-
                   </div>
-
                 </div>
-
               </div>
-
             ))
-
           )}
-
         </div>
-
       </div>
 
       {/* Evaluation Criteria */}
 
       <div className="card mb-4">
-
         <div className="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
-
           <span>Evaluation Criteria</span>
 
           <button
@@ -302,33 +254,17 @@ function TenderDetails() {
             onClick={handleExtractCriteria}
             disabled={extracting}
           >
-
-            {extracting
-              ? "Extracting..."
-              : "Extract Criteria"}
-
+            {extracting ? "Extracting..." : "Extract Criteria"}
           </button>
-
         </div>
 
         <div className="card-body">
-
           {criteria.length === 0 ? (
-
-            <div className="alert alert-warning">
-
-              No criteria extracted.
-
-            </div>
-
+            <div className="alert alert-warning">No criteria extracted.</div>
           ) : (
-
             <table className="table table-bordered table-hover">
-
               <thead className="table-light">
-
                 <tr>
-
                   <th width="5%">#</th>
 
                   <th width="30%">Title</th>
@@ -336,17 +272,12 @@ function TenderDetails() {
                   <th>Description</th>
 
                   <th width="12%">Mandatory</th>
-
                 </tr>
-
               </thead>
 
               <tbody>
-
                 {criteria.map((c, index) => (
-
                   <tr key={c.id}>
-
                     <td>{index + 1}</td>
 
                     <td>{c.title}</td>
@@ -354,78 +285,41 @@ function TenderDetails() {
                     <td>{c.description}</td>
 
                     <td>
-
                       {c.mandatory ? (
-
-                        <span className="badge bg-danger">
-
-                          Yes
-
-                        </span>
-
+                        <span className="badge bg-danger">Yes</span>
                       ) : (
-
-                        <span className="badge bg-secondary">
-
-                          No
-
-                        </span>
-
+                        <span className="badge bg-secondary">No</span>
                       )}
-
                     </td>
-
                   </tr>
-
                 ))}
-
               </tbody>
-
             </table>
-
           )}
-
         </div>
-
       </div>
 
       {/* Registered Bidders */}
 
       <div className="card mb-4">
-
         <div className="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
-
           <span>Registered Bidders</span>
 
           <button
             className="btn btn-light btn-sm"
-            onClick={() =>
-              navigate(`/tenders/${tenderId}/register-bidder`)
-            }
+            onClick={() => navigate(`/tenders/${tenderId}/register-bidder`)}
           >
             + Register Bidder
           </button>
-
         </div>
 
         <div className="card-body">
-
           {bidders.length === 0 ? (
-
-            <div className="alert alert-warning">
-
-              No bidders registered.
-
-            </div>
-
+            <div className="alert alert-warning">No bidders registered.</div>
           ) : (
-
             <table className="table table-bordered table-hover">
-
               <thead className="table-light">
-
                 <tr>
-
                   <th>#</th>
 
                   <th>Bidder Name</th>
@@ -437,17 +331,12 @@ function TenderDetails() {
                   <th>Phone</th>
 
                   <th>Action</th>
-
                 </tr>
-
               </thead>
 
               <tbody>
-
                 {bidders.map((bidder, index) => (
-
                   <tr key={bidder.id}>
-
                     <td>{index + 1}</td>
 
                     <td>{bidder.bidder_name}</td>
@@ -459,36 +348,58 @@ function TenderDetails() {
                     <td>{bidder.phone}</td>
 
                     <td>
+                      <div className="d-flex gap-2">
+                        <button
+                          className="btn btn-success btn-sm"
+                          onClick={() => navigate("/bidders/" + bidder.id)}
+                        >
+                          View
+                        </button>
 
-                      <button
-                        className="btn btn-success btn-sm"
-                        onClick={() =>
-                          navigate("/bidders/" + bidder.id)
-                        }
-                      >
-                        View
-                      </button>
+                        <button
+                          className="btn btn-danger btn-sm"
+                          onClick={async () => {
+                            const confirmed = window.confirm(
+                              `Delete bidder "${bidder.bidder_name}"?\n\n` +
+                                "This will permanently delete:\n\n" +
+                                "• Bidder Registration\n" +
+                                "• Technical Bid Documents\n" +
+                                "• Embeddings\n" +
+                                "• Evaluation Results\n\n" +
+                                "This action cannot be undone.",
+                            );
 
+                            if (!confirmed) return;
+
+                            try {
+                              await deleteBidder(bidder.id);
+
+                              alert("Bidder deleted successfully.");
+
+                              await loadTender();
+                            } catch (err) {
+                              console.error(err);
+
+                              alert(
+                                err.response?.data?.detail ||
+                                  "Unable to delete bidder.",
+                              );
+                            }
+                          }}
+                        >
+                          Delete
+                        </button>
+                      </div>
                     </td>
-
                   </tr>
-
                 ))}
-
               </tbody>
-
             </table>
-
           )}
-
         </div>
-
       </div>
-
     </div>
-
   );
-
 }
 
 export default TenderDetails;

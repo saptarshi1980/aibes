@@ -1,6 +1,7 @@
 from uuid import UUID
 
 from sqlalchemy import select
+from sqlalchemy import delete
 
 from app.database.connection import SessionLocal
 from app.domain.bidder_document import BidderDocument
@@ -97,10 +98,51 @@ class BidderDocumentRepository:
             )
 
 
+    #def delete(
+        #self,
+        #document_id: UUID
+    #):
+
+        #with SessionLocal() as session:
+
+         #   model = session.get(
+          #      BidderDocumentModel,
+           #     str(document_id)
+            #)
+
+            #if model is None:
+             #   return False
+
+            #session.delete(model)
+
+            #session.commit()
+
+            #return True
+    
+    #def find_technical_bid(
+    #self,
+    #bidder_id: UUID
+#):
+
+ #       with SessionLocal() as session:
+
+  #          return session.scalar(
+
+   #             select(BidderDocumentModel).where(
+
+#                    BidderDocumentModel.bidder_id == str(bidder_id),
+
+ #                   BidderDocumentModel.document_type ==
+  #                  DocumentType.TECHNICAL_BID.value
+
+   #             )
+
+    #        )    
+            
     def delete(
-        self,
-        document_id: UUID
-    ):
+    self,
+    document_id: UUID
+):
 
         with SessionLocal() as session:
 
@@ -116,4 +158,23 @@ class BidderDocumentRepository:
 
             session.commit()
 
-            return True
+            return True        
+    
+    def delete_by_bidder(
+    self,
+    bidder_id: UUID
+):
+
+        with SessionLocal() as session:
+
+            session.execute(
+
+                delete(BidderDocumentModel).where(
+
+                    BidderDocumentModel.bidder_id == str(bidder_id)
+
+                )
+
+            )
+
+            session.commit()    
