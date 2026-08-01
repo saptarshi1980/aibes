@@ -25,6 +25,7 @@ from app.api.bidder_index import router as bidder_index_router
 from app.api.evaluation_report import router as evaluation_report_router
 from app.api.tender_report import router as tender_report_router
 from app.api.tender_excel_report import router as tender_excel_router
+from app.api.tender_pdf_view import router as tender_pdf_view_router
 
 app = FastAPI(
     title="AI Assisted Bid Evaluation System",
@@ -76,6 +77,10 @@ app.include_router(
 app.include_router(tender_report_router)
 app.include_router(
     tender_excel_router
+)
+
+app.include_router(
+    tender_pdf_view_router
 )
 
 @app.get("/")

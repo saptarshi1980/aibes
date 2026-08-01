@@ -290,3 +290,19 @@ export async function downloadTenderPDFReport(tenderId) {
     );
     return response.data;
 }
+
+export async function viewTenderDocument(documentId) {
+
+    const response = await api.get(
+
+        `/documents/${documentId}/view`,
+
+        {
+            responseType: "blob"
+        }
+
+    );
+
+    return response.data;
+
+}
