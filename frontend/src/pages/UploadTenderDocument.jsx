@@ -98,6 +98,13 @@ function UploadTenderDocument() {
 
                     Upload Tender Document
 
+                    <button
+        className="btn btn-secondary"
+        onClick={() => navigate("/")}
+    >
+        🏠 Home
+    </button>
+
                 </div>
 
                 <div className="card-body">

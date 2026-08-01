@@ -58,6 +58,12 @@ function CreateTender() {
                 </div>
 
                 <div className="card-body">
+                    <button
+        className="btn btn-secondary"
+        onClick={() => navigate("/")}
+    >
+        🏠 Home
+    </button>
 
                     <TenderForm
                         onSubmit={saveTender}

@@ -9,9 +9,9 @@ function Menu({ setPage }) {
             }}
         >
 
-            <button onClick={() => setPage("dashboard")}>
+            {/* <button onClick={() => setPage("dashboard")}>
                 Dashboard
-            </button>
+            </button> */}
 
             <button
                 onClick={() => setPage("tenders")}
@@ -20,7 +20,7 @@ function Menu({ setPage }) {
                 Tenders
             </button>
 
-            <button
+            {/* <button
                 onClick={() => setPage("bidders")}
                 style={{ marginLeft: "10px" }}
             >
@@ -32,7 +32,7 @@ function Menu({ setPage }) {
                 style={{ marginLeft: "10px" }}
             >
                 Evaluation
-            </button>
+            </button> */}
 
         </div>
 

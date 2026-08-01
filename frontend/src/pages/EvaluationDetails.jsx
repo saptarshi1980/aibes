@@ -82,6 +82,13 @@ function EvaluationDetails() {
 
       <h2 className="mb-4">
         Technical Evaluation
+
+        <button
+        className="btn btn-secondary"
+        onClick={() => navigate("/")}
+    >
+        🏠 Home
+    </button>
       </h2>
 
       {/* ============================= */}

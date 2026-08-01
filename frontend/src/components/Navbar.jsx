@@ -8,12 +8,12 @@ function Navbar() {
 
             <div className="container">
 
-                <Link
+                {/* <Link
                     className="btn btn-outline-primary me-2"
                     to="/"
                 >
                     Dashboard
-                </Link>
+                </Link> */}
 
                 <Link
                     className="btn btn-outline-primary me-2"
@@ -22,7 +22,7 @@ function Navbar() {
                     Tenders
                 </Link>
 
-                <Link
+                {/* <Link
                     className="btn btn-outline-primary me-2"
                     to="/bidders"
                 >
@@ -34,7 +34,7 @@ function Navbar() {
                     to="/evaluation"
                 >
                     Evaluation
-                </Link>
+                </Link> */}
 
             </div>
 

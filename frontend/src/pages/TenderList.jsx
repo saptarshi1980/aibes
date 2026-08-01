@@ -54,6 +54,12 @@ function TenderList() {
         >
           + Create Tender
         </button>
+        <button
+        className="btn btn-secondary"
+        onClick={() => navigate("/")}
+    >
+        🏠 Home
+    </button>
       </div>
 
       <table className="table table-bordered table-hover mt-3">

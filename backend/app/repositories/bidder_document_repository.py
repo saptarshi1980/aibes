@@ -119,26 +119,25 @@ class BidderDocumentRepository:
 
             #return True
     
-    #def find_technical_bid(
-    #self,
-    #bidder_id: UUID
-#):
+    def find_technical_bid(
+    self,
+    bidder_id: UUID
+):
 
- #       with SessionLocal() as session:
+        with SessionLocal() as session:
+            return session.scalar(
 
-  #          return session.scalar(
+                    select(BidderDocumentModel).where(
 
-   #             select(BidderDocumentModel).where(
+                    BidderDocumentModel.bidder_id == str(bidder_id),
 
-#                    BidderDocumentModel.bidder_id == str(bidder_id),
+                        BidderDocumentModel.document_type ==
+                        DocumentType.TECHNICAL_BID.value
 
- #                   BidderDocumentModel.document_type ==
-  #                  DocumentType.TECHNICAL_BID.value
+                )
 
-   #             )
-
-    #        )    
-            
+            )    
+                
     def delete(
     self,
     document_id: UUID

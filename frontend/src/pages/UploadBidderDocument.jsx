@@ -78,6 +78,13 @@ function UploadBidderDocument() {
 
                     Upload Technical Bid
 
+                    <button
+        className="btn btn-secondary"
+        onClick={() => navigate("/")}
+    >
+        🏠 Home
+    </button>
+
                 </div>
 
                 <div className="card-body">

@@ -128,7 +128,9 @@ function BidderWorkspace() {
   return (
     <div className="container mt-4">
       <h2>Bidder Workspace</h2>
-
+      <button className="btn btn-secondary" onClick={() => navigate("/")}>
+        🏠 Home
+      </button>
       <div className="card mb-4">
         <div className="card-header bg-primary text-white">
           Bidder Information

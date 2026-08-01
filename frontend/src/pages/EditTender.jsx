@@ -63,6 +63,13 @@ function EditTender() {
 
                     Edit Tender
 
+                    <button
+        className="btn btn-secondary"
+        onClick={() => navigate("/")}
+    >
+        🏠 Home
+    </button>
+
                 </div>
 
                 <div className="card-body">

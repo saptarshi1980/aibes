@@ -65,6 +65,13 @@ function RegisterBidder() {
 
                     Register Bidder
 
+                    <button
+        className="btn btn-secondary"
+        onClick={() => navigate("/")}
+    >
+        🏠 Home
+    </button>
+
                 </div>
 
                 <div className="card-body">

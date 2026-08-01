@@ -133,6 +133,13 @@ function TenderDetails() {
           <span>Tender Information</span>
 
           <button
+        className="btn btn-secondary"
+        onClick={() => navigate("/")}
+    >
+        🏠 Home
+    </button>
+
+          <button
             className="btn btn-light btn-sm"
             onClick={async () => {
               try {
