@@ -1,6 +1,7 @@
 from enum import Enum
 
 
+
 class EvaluationStatus(str, Enum):
 
     COMPLIED = "COMPLIED"

@@ -7,6 +7,7 @@ import {
   generateBidderIndex,
   getEmbeddingStatus,
   getEvaluationStatus,
+  generateClarificationLetter,
 } from "../services/tenderService";
 
 function BidderWorkspace() {
@@ -294,6 +295,27 @@ function BidderWorkspace() {
             : alreadyEvaluated
               ? "Already Evaluated"
               : "Evaluate Bidder"}
+        </button>
+
+        <button
+          className="btn btn-warning"
+          onClick={async () => {
+            const submissionDate = prompt("Submission Date (e.g. 15-Aug-2026)");
+
+            if (!submissionDate) return;
+
+            try {
+              await generateClarificationLetter(bidderId, submissionDate);
+
+              alert("Clarification letter generated successfully.");
+            } catch (err) {
+              console.error(err);
+
+              alert("Unable to generate clarification letter.");
+            }
+          }}
+        >
+          Generate Clarification
         </button>
       </div>
     </div>

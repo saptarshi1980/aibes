@@ -306,3 +306,22 @@ export async function viewTenderDocument(documentId) {
     return response.data;
 
 }
+
+export async function generateClarificationLetter(
+    bidderId,
+    submissionDate
+) {
+
+    const response = await api.post(
+
+        `/evaluation/bidder/${bidderId}/clarification`,
+
+        {
+            submission_date: submissionDate
+        }
+
+    );
+
+    return response.data;
+
+}
