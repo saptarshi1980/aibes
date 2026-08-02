@@ -105,25 +105,9 @@ class ClarificationLetterService:
         text.append(
             f"You are requested to kindly submit sufficient "
             f"documents as per the said NIT to this office "
-            f"positively by {submission_date}."
+            f"positively by {submission_date} to the email address corp.purchase@company_domain.com.\n\nRegards \n\nProcurement Teeam,\n\nCompany Name"
         )
 
         content = "\n".join(text)
 
-        bidder_folder = StorageManager.get_bidder_documents_path(
-            tender.id,
-            bidder.bidder_name
-        )
-
-        output_file = bidder_folder / "Clarification_Email.txt"
-
-        output_file.write_text(
-            content,
-            encoding="utf-8"
-        )
-
-        return {
-            "message": "Clarification letter generated.",
-            "file": str(output_file),
-            "content": content
-        }
+        return content
