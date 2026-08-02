@@ -105,7 +105,7 @@ class ClarificationLetterService:
         text.append(
             f"You are requested to kindly submit sufficient "
             f"documents as per the said NIT to this office "
-            f"positively by {submission_date} to the email address corp.purchase@company_domain.com.\n\nRegards \n\nProcurement Teeam,\n\nCompany Name"
+            f"positively by {submission_date} to the email address corp.purchase@company_domain.com.\n\nRegards \n\nProcurement Team,\n\nCompany Name"
         )
 
         content = "\n".join(text)

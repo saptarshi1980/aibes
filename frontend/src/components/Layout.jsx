@@ -8,7 +8,7 @@ function Layout() {
 
           <div>
             <h4 className="text-white mb-0">
-              AI Assisted Bid Evaluation System
+              AI Assisted Technical Bid Evaluation System
             </h4>
 
             <small className="text-light">

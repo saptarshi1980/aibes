@@ -268,7 +268,7 @@ function BidderWorkspace() {
             }
           }}
         >
-          {indexing ? "Generating..." : "Generate Embeddings"}
+          {indexing ? "Extracting..." : "Extract Technical Competency"}
         </button>
 
         <button
@@ -305,9 +305,23 @@ function BidderWorkspace() {
             if (!submissionDate) return;
 
             try {
-              await generateClarificationLetter(bidderId, submissionDate);
+              const blob = await generateClarificationLetter(
+                bidderId,
 
-              alert("Clarification letter generated successfully.");
+                submissionDate,
+              );
+
+              const url = window.URL.createObjectURL(blob);
+
+              const link = document.createElement("a");
+
+              link.href = url;
+
+              link.download = "Clarification_Email.txt";
+
+              link.click();
+
+              window.URL.revokeObjectURL(url);
             } catch (err) {
               console.error(err);
 

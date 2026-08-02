@@ -239,7 +239,7 @@ function TenderDetails() {
           </div>
         </div>
 
-        <div className="d-flex gap-2">
+        <div className="d-flex justify-content-end gap-2 w-100 ms-auto">
           <button
             className="btn btn-outline-secondary"
             onClick={handleDownloadPdf}
@@ -251,7 +251,7 @@ function TenderDetails() {
                 Preparing…
               </>
             ) : (
-              "⬇ PDF Report"
+              "⬇ Evaluation Report (PDF)"
             )}
           </button>
 
@@ -266,7 +266,7 @@ function TenderDetails() {
                 Preparing…
               </>
             ) : (
-              "⬇ Excel Report"
+              "⬇ Evaluation Report (Excel)"
             )}
           </button>
         </div>
