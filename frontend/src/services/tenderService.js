@@ -194,3 +194,23 @@ export async function generateClarificationLetter(bidderId, submissionDate) {
 
   return response.data;
 }
+
+export async function archiveTender(tenderId) {
+
+    const response = await api.put(
+        `/tenders/${tenderId}/archive`
+    );
+
+    return response.data;
+
+}
+
+export async function restoreTender(tenderId) {
+
+    const response = await api.put(
+        `/tenders/${tenderId}/restore`
+    );
+
+    return response.data;
+
+}

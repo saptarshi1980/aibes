@@ -72,3 +72,21 @@ def update_tender(
             status_code=404,
             detail=str(ex)
         )
+
+@router.put("/{tender_id}/archive")
+def archive_tender(
+    tender_id: UUID
+):
+
+    return service.archive_tender(
+        tender_id
+    )
+    
+@router.put("/{tender_id}/restore")
+def restore_tender(
+    tender_id: UUID
+):
+
+    return service.restore_tender(
+        tender_id
+    )            

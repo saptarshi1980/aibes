@@ -122,6 +122,9 @@ function TenderDetails() {
     return <div className="alert alert-danger">{error}</div>;
   }
 
+ console.log("Evaluation Report:", evaluationReport);
+console.log("Evaluation Bidders:", evaluationReport?.bidders);
+
   return (
     <div className="container">
       <h2 className="mb-4">Tender Details</h2>

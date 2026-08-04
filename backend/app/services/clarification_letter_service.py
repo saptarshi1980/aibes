@@ -1,4 +1,6 @@
+from email.mime import text
 from pathlib import Path
+from pydoc import text
 from uuid import UUID
 from datetime import date
 from app.repositories.criterion_repository import CriterionRepository
@@ -7,6 +9,7 @@ from app.repositories.tender_repository import TenderRepository
 from app.repositories.evaluation_result_repository import EvaluationResultRepository
 from app.utils.storage_manager import StorageManager
 from app.enums.evaluation_status import EvaluationStatus
+from app.domain import bidder
 
 
 class ClarificationLetterService:
@@ -64,6 +67,8 @@ class ClarificationLetterService:
         text.append("")
         text.append(bidder.contact_person or "")
         text.append(bidder.bidder_name)
+        if bidder.email:
+            text.append(f"Email : {bidder.email}")
         text.append("")
         text.append(
             f"SUB: DPL NIT No. {tender.tender_number}"
@@ -102,11 +107,41 @@ class ClarificationLetterService:
 
             sl += 1
 
+
+        text.append("")
+
         text.append(
-            f"You are requested to kindly submit sufficient "
-            f"documents as per the said NIT to this office "
-            f"positively by {submission_date} to the email address corp.purchase@company_domain.com.\n\nRegards \n\nProcurement Team,\n\nCompany Name"
+            "You are requested to kindly submit adequate supporting "
+            "documents against the above-mentioned criteria as per "
+            "the provisions of the NIT."
         )
+
+        text.append("")
+    
+
+
+        text.append(
+            f"The required documents may kindly be submitted to this office "
+            f"on or before {submission_date} through email at "
+            f"corp.purchase@company_domain.com."
+        )
+
+        text.append("")
+
+        text.append(
+            "In case the required documents are not received within the stipulated time, "
+            "your bid shall be evaluated based on the documents already available with this office."
+        )
+
+        text.append("")
+
+        text.append("Regards,")
+
+        text.append("")
+
+        text.append("Procurement Team")
+
+        text.append("The Durgapur Projects Limited")
 
         content = "\n".join(text)
 

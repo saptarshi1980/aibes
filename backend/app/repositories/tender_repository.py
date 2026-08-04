@@ -143,3 +143,45 @@ class TenderRepository:
                     created_at=model.created_at,
                     updated_at=model.updated_at
                 )    
+            
+    def archive(
+    self,
+    tender_id: UUID
+):
+
+        with SessionLocal() as session:
+
+            model = session.get(
+                TenderModel,
+                str(tender_id)
+            )
+
+            if model is None:
+                return False
+
+            model.status = "ARCHIVED"
+
+            session.commit()
+
+            return True   
+    def restore(
+    self,
+    tender_id: UUID
+):
+
+        with SessionLocal() as session:
+
+            model = session.get(
+                TenderModel,
+                str(tender_id)
+            )
+
+            if model is None:
+                return False
+
+            model.status = TenderStatus.COMPLETED.value
+
+            session.commit()
+
+            return True         
+            

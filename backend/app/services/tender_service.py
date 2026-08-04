@@ -1,5 +1,5 @@
 from datetime import datetime
-from uuid import uuid4
+from uuid import UUID, uuid4
 
 from app.domain.tender import Tender
 from app.enums.tender_status import TenderStatus
@@ -84,3 +84,36 @@ class TenderService:
         return self.repository.update(
             tender
         )
+    def archive_tender(
+    self,
+    tender_id: UUID
+):
+
+        success = self.repository.archive(
+            tender_id
+        )
+
+        if not success:
+            raise ValueError("Tender not found.")
+
+        return {
+            "message": "Tender archived successfully."
+        } 
+    
+    def restore_tender(
+    self,
+    tender_id: UUID
+):
+
+        success = self.repository.restore(
+            tender_id
+        )
+
+        if not success:
+            raise ValueError(
+                "Tender not found."
+            )
+
+        return {
+            "message": "Tender restored successfully."
+        }       

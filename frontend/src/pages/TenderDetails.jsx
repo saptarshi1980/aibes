@@ -216,11 +216,14 @@ function TenderDetails() {
             onClick={() => navigate("/")}
           >
             Back to home
+  
           </button>
         </div>
       </div>
     );
   }
+
+
 
   return (
     <div className="container py-4">
@@ -558,7 +561,7 @@ function TenderDetails() {
 
                   <tbody>
                     {evaluationReport.bidders.map((b) => (
-                      <tr key={b.bidder_id}>
+                      <tr key={b.id}>
                         <td className="fw-semibold">{b.name}</td>
                         <td className="text-success">{b.complied}</td>
                         <td>{b.partial}</td>
