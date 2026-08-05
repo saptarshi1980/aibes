@@ -2,11 +2,11 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import {
-  getAllTenders,
-  archiveTender,
+  getArchivedTenders,
+  restoreTender,
 } from "../services/tenderService";
 
-function TenderList() {
+function ArchivedTenderList() {
 
   const [tenders, setTenders] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -22,7 +22,7 @@ function TenderList() {
 
     try {
 
-      const data = await getAllTenders();
+      const data = await getArchivedTenders();
 
       setTenders(data);
 
@@ -30,7 +30,7 @@ function TenderList() {
 
       console.error(err);
 
-      setError("Unable to load tenders.");
+      setError("Unable to load archived tenders.");
 
     } finally {
 
@@ -40,15 +40,13 @@ function TenderList() {
 
   }
 
-  async function handleArchive(tenderId) {
+  async function handleRestore(tenderId) {
 
     const confirmed = window.confirm(
 
-      "Archive this Tender?\n\n" +
+      "Restore this Tender?\n\n" +
 
-      "The Tender will no longer appear in the Active Tender List.\n\n" +
-
-      "All documents, bidders, criteria, evaluation reports and clarification letters will be preserved.\n\n" +
+      "The Tender will be moved back to the Active Tender List.\n\n" +
 
       "Continue?"
 
@@ -58,9 +56,9 @@ function TenderList() {
 
     try {
 
-      await archiveTender(tenderId);
+      await restoreTender(tenderId);
 
-      alert("Tender archived successfully.");
+      alert("Tender restored successfully.");
 
       await loadTenders();
 
@@ -68,7 +66,7 @@ function TenderList() {
 
       console.error(err);
 
-      alert("Unable to archive Tender.");
+      alert("Unable to restore Tender.");
 
     }
 
@@ -77,11 +75,9 @@ function TenderList() {
   if (loading) {
 
     return (
-
       <div className="container mt-4">
         <h4>Loading...</h4>
       </div>
-
     );
 
   }
@@ -89,13 +85,11 @@ function TenderList() {
   if (error) {
 
     return (
-
       <div className="container mt-4">
         <div className="alert alert-danger">
           {error}
         </div>
       </div>
-
     );
 
   }
@@ -106,22 +100,15 @@ function TenderList() {
 
       <div className="d-flex justify-content-between align-items-center">
 
-        <h3>Tender Management</h3>
+        <h3>Archived Tenders</h3>
 
         <div>
 
           <button
-            className="btn btn-success me-2"
-            onClick={() => navigate("/tenders/new")}
+            className="btn btn-primary me-2"
+            onClick={() => navigate("/tenders")}
           >
-            + Create Tender
-          </button>
-
-          <button
-            className="btn btn-info me-2"
-            onClick={() => navigate("/tenders/archived")}
-          >
-            📦 Archived Tenders
+            ← Active Tenders
           </button>
 
           <button
@@ -132,6 +119,14 @@ function TenderList() {
           </button>
 
         </div>
+
+      </div>
+
+      <div className="alert alert-info mt-3">
+
+        Archived tenders are preserved with all documents,
+        bidders, criteria, evaluation reports and clarification
+        letters. They may be restored at any time.
 
       </div>
 
@@ -153,7 +148,7 @@ function TenderList() {
 
             <th>Status</th>
 
-            <th width="240">Action</th>
+            <th width="220">Action</th>
 
           </tr>
 
@@ -165,8 +160,11 @@ function TenderList() {
 
             <tr>
 
-              <td colSpan="7" className="text-center">
-                No Active Tenders Found
+              <td
+                colSpan="7"
+                className="text-center"
+              >
+                No Archived Tenders
               </td>
 
             </tr>
@@ -189,7 +187,7 @@ function TenderList() {
 
                 <td>
 
-                  <span className="badge bg-success">
+                  <span className="badge bg-secondary">
                     {tender.status}
                   </span>
 
@@ -205,17 +203,10 @@ function TenderList() {
                   </button>
 
                   <button
-                    className="btn btn-warning btn-sm me-2"
-                    onClick={() => navigate("/tenders/edit/" + tender.id)}
+                    className="btn btn-warning btn-sm"
+                    onClick={() => handleRestore(tender.id)}
                   >
-                    Edit
-                  </button>
-
-                  <button
-                    className="btn btn-secondary btn-sm"
-                    onClick={() => handleArchive(tender.id)}
-                  >
-                    Archive
+                    Restore
                   </button>
 
                 </td>
@@ -236,4 +227,4 @@ function TenderList() {
 
 }
 
-export default TenderList;
+export default ArchivedTenderList;

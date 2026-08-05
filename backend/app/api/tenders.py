@@ -29,6 +29,11 @@ def create_tender(request: TenderCreateRequest):
 def get_all_tenders():
     return service.get_all_tenders()
 
+@router.get("/archived")
+def get_archived_tenders():
+
+    return service.get_archived_tenders()         
+
 
 @router.get("/{tender_id}", response_model=TenderResponse)
 def get_tender(tender_id: UUID):
@@ -89,4 +94,15 @@ def restore_tender(
 
     return service.restore_tender(
         tender_id
-    )            
+    )    
+    
+@router.put(
+    "/{tender_id}/restore"
+)
+def restore_tender(
+    tender_id: UUID
+):
+
+    return service.restore_tender(
+        tender_id
+    )       

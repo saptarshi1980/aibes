@@ -56,17 +56,24 @@ class TenderRepository:
                 created_at=model.created_at,
                 updated_at=model.updated_at
             )
-
     def find_all(self):
 
         with SessionLocal() as session:
 
             rows = session.scalars(
-                select(TenderModel)
+
+                select(TenderModel).where(
+
+                    TenderModel.status != TenderStatus.ARCHIVED.value
+
+                )
+
             ).all()
 
             return [
+
                 Tender(
+
                     id=UUID(row.id),
                     tender_number=row.tender_number,
                     title=row.title,
@@ -77,10 +84,13 @@ class TenderRepository:
                     description=row.description,
                     created_at=row.created_at,
                     updated_at=row.updated_at
-                )
-                for row in rows
-            ]
 
+                )
+
+                for row in rows
+
+            ]
+    
     def exists_by_tender_number(self, tender_number: str):
 
         with SessionLocal() as session:
@@ -183,5 +193,60 @@ class TenderRepository:
 
             session.commit()
 
-            return True         
-            
+            return True     
+        
+    def find_archived(self):
+
+        with SessionLocal() as session:
+
+            rows = session.scalars(
+
+                select(TenderModel).where(
+
+                    TenderModel.status == TenderStatus.ARCHIVED.value
+
+                )
+
+            ).all()
+
+            return [
+
+                Tender(
+
+                    id=UUID(row.id),
+                    tender_number=row.tender_number,
+                    title=row.title,
+                    department=row.department,
+                    issue_date=row.issue_date,
+                    closing_date=row.closing_date,
+                    status=TenderStatus(row.status),
+                    description=row.description,
+                    created_at=row.created_at,
+                    updated_at=row.updated_at
+
+                )
+
+                for row in rows
+
+            ]        
+    
+    def restore(
+    self,
+    tender_id: UUID
+):
+
+        with SessionLocal() as session:
+
+            model = session.get(
+                TenderModel,
+                str(tender_id)
+            )
+
+            if model is None:
+                return False
+
+            model.status = TenderStatus.DRAFT.value
+
+            session.commit()
+
+            return True        

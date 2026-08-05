@@ -14,6 +14,7 @@ import UploadTenderDocument from "./pages/UploadTenderDocument";
 import BidderWorkspace from "./pages/BidderWorkspace";
 import UploadBidderDocument from "./pages/UploadBidderDocument";
 import RegisterBidder from "./pages/RegisterBidder";
+import ArchivedTenderList from "./pages/ArchivedTenderList";
 
 function App() {
   return (
@@ -53,6 +54,8 @@ function App() {
           path="/tenders/:tenderId/register-bidder"
           element={<RegisterBidder />}
         />
+
+        <Route path="/tenders/archived" element={<ArchivedTenderList />} />
       </Routes>
     </BrowserRouter>
   );

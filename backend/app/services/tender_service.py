@@ -117,3 +117,28 @@ class TenderService:
         return {
             "message": "Tender restored successfully."
         }       
+        
+    def get_archived_tenders(self):
+
+        return self.repository.find_archived()  
+    
+    def restore_tender(
+    self,
+    tender_id: UUID
+):
+
+        success = self.repository.restore(
+            tender_id
+        )
+
+        if not success:
+            raise ValueError(
+                "Tender not found."
+            )
+
+        return {
+
+            "message":
+            "Tender restored successfully."
+
+        }  

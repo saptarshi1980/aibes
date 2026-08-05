@@ -214,3 +214,25 @@ export async function restoreTender(tenderId) {
     return response.data;
 
 }
+
+export async function getArchivedTenders() {
+
+    const response = await api.get(
+        "/tenders/archived"
+    );
+
+    return response.data;
+
+}
+
+// export async function restoreTender(tenderId) {
+
+//     const response = await api.put(
+
+//         `/tenders/${tenderId}/restore`
+
+//     );
+
+//     return response.data;
+
+// }
